@@ -629,7 +629,7 @@
     </div>
 
     <script>
-        // ES5 網絡請求封裝 (相容 iOS 12 Safari)
+        // 兼容 iOS 12 舊版 Safari 的 AJAX 請求
         function ajaxGet(url, callback) {
             var xhr = new XMLHttpRequest();
             xhr.open('GET', url, true);
@@ -649,6 +649,19 @@
             };
             xhr.onerror = function(e) { callback(e, null); };
             xhr.send();
+        }
+
+        // 相容 iOS 12 的 Date 日期解析 (解決 ISO 8601 時間字串相容問題)
+        function parseIsoDate(dateStr) {
+            if (!dateStr) return null;
+            var cleanStr = dateStr.replace(/-/g, '/').replace('T', ' ');
+            if (cleanStr.indexOf('+') !== -1) cleanStr = cleanStr.split('+')[0];
+            if (cleanStr.indexOf('.') !== -1) cleanStr = cleanStr.split('.')[0];
+            var d = new Date(cleanStr);
+            if (isNaN(d.getTime())) {
+                d = new Date(dateStr);
+            }
+            return isNaN(d.getTime()) ? null : d;
         }
 
         var districtList = [
@@ -846,9 +859,10 @@
         }
 
         var defaultBuses = [
-            { company: "kmb", route: "E36A", dir: "inbound", stop: "TC188", origin_name: "東涌", dest_name: "往 元朗", offset: 0 },
-            { company: "ctb", route: "E33", dir: "outbound", stop: "001854", origin_name: "屯門", dest_name: "往 機場/東涌", offset: 0 },
-            { company: "nlb", route: "23", dir: "outbound", stop: "昂坪", origin_name: "東涌", dest_name: "往 昂坪", offset: 0 }
+            { company: "kmb", route: "E31", dir: "outbound", stop: "TC188", origin_name: "逸東邨", dest_name: "往 荃灣", offset: 0 },
+            { company: "kmb", route: "E36A", dir: "inbound", stop: "TC188", origin_name: "逸東邨", dest_name: "往 元朗", offset: 0 },
+            { company: "ctb", route: "E21A", dir: "outbound", stop: "001854", origin_name: "逸東邨", dest_name: "往 何文田", offset: 0 },
+            { company: "ctb", route: "E21B", dir: "outbound", stop: "001854", origin_name: "逸東邨", dest_name: "往 何文田", offset: 0 }
         ];
 
         var currentBuses = [];
@@ -997,29 +1011,48 @@
             ajaxGet('https://data.etabus.gov.hk/v1/transport/kmb/stop-eta/' + stopCode, function(err, etaData) {
                 if (err || !etaData || !etaData.data) return callback(null, []);
                 var kmbDir = dir === 'inbound' ? 'I' : 'O';
+                var targetRoute = route.trim().toUpperCase();
+                
                 var filtered = etaData.data.filter(function(i) {
-                    return i.route.toUpperCase() === route.toUpperCase() && (!i.dir || i.dir === kmbDir);
+                    if (!i || !i.route) return false;
+                    var matchRoute = i.route.trim().toUpperCase() === targetRoute;
+                    var matchDir = !i.dir || i.dir === kmbDir;
+                    return matchRoute && matchDir;
                 });
+                
+                // 如果特定方向抓不到數據，則寬鬆比對路線名
+                if (filtered.length === 0) {
+                    filtered = etaData.data.filter(function(i) {
+                        return i && i.route && i.route.trim().toUpperCase() === targetRoute;
+                    });
+                }
+                
                 callback(null, filtered);
             });
         }
 
         function getCTBETA(route, stopIdOrName, dir, callback) {
             if (!stopIdOrName) return callback(null, []);
-            var ctbDir = dir === 'inbound' ? 'inbound' : 'outbound';
+            var ctbDirCode = (dir === 'inbound') ? 'I' : 'O';
+            var routeUpper = route.trim().toUpperCase();
             
             function fetchEta(stopId) {
-                ajaxGet('https://rt.data.gov.hk/v2/transport/citybus/eta/CTB/' + stopId + '/' + route.toUpperCase(), function(err, etaData) {
+                var url = 'https://rt.data.gov.hk/v2/transport/citybus/eta/CTB/' + stopId + '/' + routeUpper;
+                ajaxGet(url, function(err, etaData) {
                     if (err || !etaData || !etaData.data) return callback(null, []);
                     var filtered = etaData.data.filter(function(i) {
-                        return i.dir === (ctbDir === 'inbound' ? 'I' : 'O');
+                        return i && i.dir === ctbDirCode;
                     });
+                    if (filtered.length === 0) {
+                        filtered = etaData.data; // 備用方案
+                    }
                     callback(null, filtered);
                 });
             }
 
             if (/[\u4e00-\u9fa5]/.test(stopIdOrName)) {
-                ajaxGet('https://rt.data.gov.hk/v2/transport/citybus/route-stop/CTB/' + route.toUpperCase() + '/' + ctbDir, function(err, stopsData) {
+                var ctbDir = dir === 'inbound' ? 'inbound' : 'outbound';
+                ajaxGet('https://rt.data.gov.hk/v2/transport/citybus/route-stop/CTB/' + routeUpper + '/' + ctbDir, function(err, stopsData) {
                     if (!err && stopsData && stopsData.data && stopsData.data.length > 0) {
                         fetchEta(stopsData.data[0].stop);
                     } else {
@@ -1076,10 +1109,12 @@
 
                     var etas = (rawEtas || []).map(function(item) {
                         if (!item || !item.eta) return null;
-                        var itemDate = new Date(item.eta);
-                        var totalDiffSeconds = Math.round((itemDate - now) / 1000) + (busOffset * 60);
+                        var itemDate = parseIsoDate(item.eta);
+                        if (!itemDate) return null;
+
+                        var totalDiffSeconds = Math.round((itemDate.getTime() - now.getTime()) / 1000) + (busOffset * 60);
                         if (bus.company === 'kmb') totalDiffSeconds -= 60;
-                        if (totalDiffSeconds < 0) return null;
+                        if (totalDiffSeconds < -60) return null;
                         if (totalDiffSeconds <= 90) return '即將到站';
                         return Math.round(totalDiffSeconds / 60) + ' 分鐘';
                     }).filter(Boolean).slice(0, 3);
