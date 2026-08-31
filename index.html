@@ -1,149 +1,343 @@
-// 搜尋路線與方向 (修正城巴 API 域名與路徑)
-function fetchDirections(idx) {
-  var company = document.getElementById('company-' + idx).value;
-  var route = document.getElementById('route-input-' + idx).value.trim().toUpperCase();
-  if (!route) return;
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>交通看板 Dashboard</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, sans-serif; }
+    body { background-color: #121212; color: #FFFFFF; padding: 10px; display: flex; flex-direction: column; gap: 12px; }
+    .card { background: #1E1E1E; border-radius: 12px; padding: 12px; border: 1px solid #333; }
+    
+    /* 第一欄：時間與天氣 */
+    .time-sec { text-align: center; }
+    .clock { font-size: 52px; font-weight: bold; color: #00E676; letter-spacing: 2px; }
+    .date { font-size: 16px; color: #AAA; margin-bottom: 8px; }
+    .weather-container { display: flex; justify-content: space-around; border-top: 1px solid #333; padding-top: 8px; margin-top: 6px; }
+    .weather-box { text-align: center; font-size: 14px; }
+    .weather-icon { font-size: 24px; display: block; }
 
-  busConfigs[idx].company = company;
-  busConfigs[idx].route = route;
+    /* 第二欄：巴士路線面板標題 */
+    .bus-sec-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+    .bus-sec-header h3 { font-size: 16px; color: #FFD54F; }
+    .add-btn { background: #1E88E5; color: #FFF; border: none; padding: 5px 10px; border-radius: 6px; font-size: 13px; font-weight: bold; cursor: pointer; }
+    .bus-list { display: flex; flex-direction: column; gap: 10px; }
 
-  var dirSelect = document.getElementById('dir-' + idx);
-  var stopSelect = document.getElementById('stop-' + idx);
-  dirSelect.innerHTML = '<option value="">搜尋中...</option>';
-  stopSelect.innerHTML = '<option value="">-- 請選擇車站 --</option>';
-  stopSelect.disabled = true;
+    /* 單條巴士路線卡片 */
+    .bus-item { background: #262626; border-radius: 8px; border: 1px solid #444; padding: 10px; display: none; }
+    .bus-item.active { display: block; }
+    
+    .bus-item-header { display: flex; justify-content: space-between; align-items: center; }
+    .bus-item-title { font-size: 14px; font-weight: bold; color: #90CAF9; }
+    .btn-group { display: flex; gap: 6px; }
+    .action-btn { background: #333; color: #80CBC4; border: 1px solid #555; padding: 3px 8px; border-radius: 4px; font-size: 12px; cursor: pointer; }
+    .del-btn { color: #FF5252; border-color: #FF5252; }
 
-  if (company === 'KMB') {
-    fetch('https://data.etabus.gov.hk/v1/transport/kmb/route/')
-      .then(function(res) { return res.json(); })
-      .then(function(data) {
-        dirSelect.innerHTML = '<option value="">-- 請選擇行車方向 (終點站) --</option>';
-        if (data.data) {
-          var matched = data.data.filter(function(r) { return r.route === route; });
-          if (matched.length > 0) {
-            matched.forEach(function(item) {
-              var opt = document.createElement('option');
-              var boundCode = item.bound === 'O' ? 'outbound' : 'inbound';
-              opt.value = boundCode + '|' + item.service_type;
-              opt.innerText = '往：' + item.dest_tc;
-              dirSelect.appendChild(opt);
-            });
-            dirSelect.disabled = false;
-          } else {
-            dirSelect.innerHTML = '<option value="">找不到九巴/龍運路線 ' + route + '</option>';
-          }
+    /* 隱藏式設定選單 */
+    .config-panel { display: none; flex-direction: column; gap: 6px; margin-top: 8px; background: #1A1A1A; padding: 8px; border-radius: 6px; }
+    .config-panel.show { display: flex; }
+    
+    select, input, button { background: #333; color: #FFF; border: 1px solid #555; padding: 6px; border-radius: 4px; font-size: 13px; }
+    .search-btn { background: #1E88E5; border: none; font-weight: bold; cursor: pointer; }
+
+    /* 到站時間顯示 */
+    .eta-display { text-align: center; margin-top: 6px; }
+    .eta-first { font-size: 32px; font-weight: bold; color: #FFC107; line-height: 1.1; }
+    .eta-next { font-size: 13px; color: #BBB; display: flex; justify-content: center; gap: 12px; margin-top: 4px; }
+    .eta-next span { color: #80CBC4; font-weight: bold; }
+
+    /* 第三欄：Google Maps */
+    .map-sec iframe { width: 100%; height: 220px; border: 0; border-radius: 8px; }
+  </style>
+</head>
+<body>
+
+  <!-- 第一欄：時間與天氣 -->
+  <div class="card time-sec">
+    <div id="clock" class="clock">00:00</div>
+    <div id="date" class="date">----年--月--日</div>
+    <div class="weather-container">
+      <div class="weather-box">
+        <span>區塊 A (中環)</span>
+        <span class="weather-icon">☀️</span>
+        <span id="temp-a">28°C</span>
+      </div>
+      <div class="weather-box">
+        <span>區塊 B (沙田)</span>
+        <span class="weather-icon">⛅</span>
+        <span id="temp-b">27°C</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 第二欄：巴士路線面板 -->
+  <div class="card">
+    <div class="bus-sec-header">
+      <h3>🚌 巴士即時到站</h3>
+      <button class="add-btn" onclick="addNewCard()">➕ 新增路線</button>
+    </div>
+    <div id="bus-list" class="bus-list"></div>
+  </div>
+
+  <!-- 第三欄：交通路況 (Google Maps) -->
+  <div class="card map-sec">
+    <h3 style="font-size:14px; margin-bottom:6px; color:#90CAF9;">🚗 自訂路線交通路況</h3>
+    <iframe id="map-iframe" src="https://maps.google.com/maps?q=from:Central,HongKong+to:Shatin,HongKong&output=embed"></iframe>
+  </div>
+
+  <script>
+    // 1. 時鐘功能
+    function updateClock() {
+      var now = new Date();
+      var h = String(now.getHours()).padStart(2, '0');
+      var m = String(now.getMinutes()).padStart(2, '0');
+      document.getElementById('clock').innerText = h + ':' + m;
+      document.getElementById('date').innerText = now.getFullYear() + '年' + (now.getMonth()+1) + '月' + now.getDate() + '日';
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    var busConfigs = [];
+    for (var i = 0; i < 10; i++) {
+      busConfigs.push({ id: i, active: false, company: 'KMB', ctbCo: 'ctb', route: '', bound: '', serviceType: '', stopId: '', stopName: '' });
+    }
+
+    function initBusCards() {
+      var container = document.getElementById('bus-list');
+      var html = '';
+
+      for (var i = 0; i < 10; i++) {
+        html += `
+          <div class="bus-item" id="bus-item-${i}">
+            <div class="bus-item-header">
+              <span class="bus-item-title" id="title-${i}">新路線 ${i + 1}</span>
+              <div class="btn-group">
+                <button class="action-btn" onclick="toggleConfig(${i})">⚙️ 設定</button>
+                <button class="action-btn del-btn" onclick="deleteCard(${i})">🗑️ 刪除</button>
+              </div>
+            </div>
+
+            <div class="config-panel" id="config-${i}">
+              <select id="company-${i}">
+                <option value="KMB">九巴 / 龍運 (KMB/LWB)</option>
+                <option value="CTB">城巴 (Citybus)</option>
+              </select>
+              <div style="display:flex; gap:6px;">
+                <input type="text" id="route-input-${i}" placeholder="路線 (如 603 / E21A)" style="flex:1;">
+                <button class="search-btn" onclick="fetchDirections(${i})">搜尋</button>
+              </div>
+              <select id="dir-${i}" onchange="fetchStops(${i})" disabled>
+                <option value="">-- 請先輸入路線 --</option>
+              </select>
+              <select id="stop-${i}" onchange="saveAndGetETA(${i})" disabled>
+                <option value="">-- 請選擇車站 --</option>
+              </select>
+            </div>
+
+            <div class="eta-display" id="eta-${i}">
+              <div style="color:#666; font-size:13px;">請點擊「⚙️ 設定」輸入路線資訊</div>
+            </div>
+          </div>
+        `;
+      }
+      container.innerHTML = html;
+    }
+    initBusCards();
+
+    function addNewCard() {
+      for (var i = 0; i < 10; i++) {
+        if (!busConfigs[i].active) {
+          busConfigs[i].active = true;
+          document.getElementById('bus-item-' + i).classList.add('active');
+          document.getElementById('config-' + i).classList.add('show');
+          break;
         }
-      });
-  } else {
-    // 修正：使用 rt.data.gov.hk/v2/ 專屬城巴 API
-    fetch('https://rt.data.gov.hk/v2/transport/citybus/route/ctb/' + route)
-      .then(function(res) { return res.json(); })
-      .then(function(res) {
-        dirSelect.innerHTML = '<option value="">-- 請選擇行車方向 (終點站) --</option>';
-        var routeData = res.data;
-        if (routeData && routeData.dest_tc) {
-          busConfigs[idx].ctbCo = 'ctb';
-          
-          var optOut = document.createElement('option');
-          optOut.value = 'outbound|1';
-          optOut.innerText = '往：' + routeData.dest_tc;
-          dirSelect.appendChild(optOut);
+      }
+    }
 
-          var optIn = document.createElement('option');
-          optIn.value = 'inbound|1';
-          optIn.innerText = '往：' + routeData.orig_tc;
-          dirSelect.appendChild(optIn);
+    function deleteCard(idx) {
+      busConfigs[idx].active = false;
+      busConfigs[idx].stopId = '';
+      document.getElementById('bus-item-' + idx).classList.remove('active');
+      document.getElementById('config-' + idx).classList.remove('show');
+    }
 
-          dirSelect.disabled = false;
-        } else {
-          dirSelect.innerHTML = '<option value="">找不到城巴路線 ' + route + '</option>';
-        }
-      })
-      .catch(function() {
-        dirSelect.innerHTML = '<option value="">找不到城巴路線 ' + route + '</option>';
-      });
-  }
-}
+    function toggleConfig(idx) {
+      document.getElementById('config-' + idx).classList.toggle('show');
+    }
 
-// 搜尋車站 (修正城巴 API 網址)
-function fetchStops(idx) {
-  var dirVal = document.getElementById('dir-' + idx).value;
-  if (!dirVal) return;
-  var parts = dirVal.split('|');
-  busConfigs[idx].bound = parts[0];
-  busConfigs[idx].serviceType = parts[1];
+    // 搜尋路線方向 (修正城巴 API 網址與結構)
+    function fetchDirections(idx) {
+      var company = document.getElementById('company-' + idx).value;
+      var route = document.getElementById('route-input-' + idx).value.trim().toUpperCase();
+      if (!route) return;
 
-  var stopSelect = document.getElementById('stop-' + idx);
-  stopSelect.innerHTML = '<option value="">載入車站中...</option>';
+      busConfigs[idx].company = company;
+      busConfigs[idx].route = route;
 
-  var url = busConfigs[idx].company === 'KMB'
-    ? 'https://data.etabus.gov.hk/v1/transport/kmb/route-stop/' + busConfigs[idx].route + '/' + busConfigs[idx].bound + '/' + busConfigs[idx].serviceType
-    : 'https://rt.data.gov.hk/v2/transport/citybus/route-stop/ctb/' + busConfigs[idx].route + '/' + busConfigs[idx].bound;
+      var dirSelect = document.getElementById('dir-' + idx);
+      var stopSelect = document.getElementById('stop-' + idx);
+      dirSelect.innerHTML = '<option value="">搜尋中...</option>';
+      stopSelect.innerHTML = '<option value="">-- 請選擇車站 --</option>';
+      stopSelect.disabled = true;
 
-  fetch(url)
-    .then(function(res) { return res.json(); })
-    .then(function(data) {
-      stopSelect.innerHTML = '<option value="">-- 請選擇車站位置 --</option>';
-      if (data.data && data.data.length > 0) {
-        var promises = data.data.slice(0, 35).map(function(stop) {
-          var stopUrl = busConfigs[idx].company === 'KMB'
-            ? 'https://data.etabus.gov.hk/v1/transport/kmb/stop/' + stop.stop
-            : 'https://rt.data.gov.hk/v2/transport/citybus/stop/' + stop.stop;
-          return fetch(stopUrl).then(function(r) { return r.json(); });
-        });
-
-        Promise.all(promises).then(function(stopDetails) {
-          stopDetails.forEach(function(detail, index) {
-            if (detail.data) {
-              var opt = document.createElement('option');
-              opt.value = detail.data.stop;
-              opt.innerText = (index + 1) + '. ' + detail.data.name_tc;
-              stopSelect.appendChild(opt);
+      if (company === 'KMB') {
+        fetch('https://data.etabus.gov.hk/v1/transport/kmb/route/')
+          .then(function(res) { return res.json(); })
+          .then(function(data) {
+            dirSelect.innerHTML = '<option value="">-- 請選擇行車方向 (終點站) --</option>';
+            if (data.data) {
+              var matched = data.data.filter(function(r) { return r.route === route; });
+              if (matched.length > 0) {
+                matched.forEach(function(item) {
+                  var opt = document.createElement('option');
+                  var boundCode = item.bound === 'O' ? 'outbound' : 'inbound';
+                  opt.value = boundCode + '|' + item.service_type;
+                  opt.innerText = '往：' + item.dest_tc;
+                  dirSelect.appendChild(opt);
+                });
+                dirSelect.disabled = false;
+              } else {
+                dirSelect.innerHTML = '<option value="">找不到九巴/龍運路線 ' + route + '</option>';
+              }
             }
           });
-          stopSelect.disabled = false;
-        });
-      }
-    });
-}
-
-// 取得即時到站時間 (修正城巴 API 網址)
-function fetchETAForIndex(idx) {
-  var cfg = busConfigs[idx];
-  if (!cfg.stopId || !cfg.active) return;
-
-  var url = cfg.company === 'KMB'
-    ? 'https://data.etabus.gov.hk/v1/transport/kmb/eta/' + cfg.stopId + '/' + cfg.route + '/' + cfg.serviceType
-    : 'https://rt.data.gov.hk/v2/transport/citybus/eta/ctb/' + cfg.stopId + '/' + cfg.route;
-
-  fetch(url)
-    .then(function(res) { return res.json(); })
-    .then(function(data) {
-      var etaDisplay = document.getElementById('eta-' + idx);
-      if (data.data && data.data.length > 0) {
-        var validEtas = data.data
-          .filter(function(item) { return item.eta !== null && item.eta !== ''; })
-          .slice(0, 3)
-          .map(function(item) {
-            var diff = Math.round((new Date(item.eta) - new Date()) / 60000);
-            return diff <= 0 ? '即將到站' : diff + ' 分鐘';
-          });
-
-        if (validEtas.length === 0) {
-          etaDisplay.innerHTML = '<div style="color:#888; font-size:13px;">尾班車已過或暫無班次</div>';
-          return;
-        }
-
-        var html = '<div class="eta-first">' + validEtas[0] + '</div>';
-        if (validEtas.length > 1) {
-          html += '<div class="eta-next">';
-          if (validEtas[1]) html += '<div>下班: <span>' + validEtas[1] + '</span></div>';
-          if (validEtas[2]) html += '<div>下下班: <span>' + validEtas[2] + '</span></div>';
-          html += '</div>';
-        }
-        etaDisplay.innerHTML = html;
       } else {
-        etaDisplay.innerHTML = '<div style="color:#888; font-size:13px;">暫無即時到站資料</div>';
+        // 使用 rt.data.gov.hk/v2 專屬城巴 API
+        fetch('https://rt.data.gov.hk/v2/transport/citybus/route/ctb/' + route)
+          .then(function(res) { return res.json(); })
+          .then(function(res) {
+            dirSelect.innerHTML = '<option value="">-- 請選擇行車方向 (終點站) --</option>';
+            var routeData = res.data;
+            if (routeData && routeData.dest_tc) {
+              busConfigs[idx].ctbCo = 'ctb';
+              
+              var optOut = document.createElement('option');
+              optOut.value = 'outbound|1';
+              optOut.innerText = '往：' + routeData.dest_tc;
+              dirSelect.appendChild(optOut);
+
+              var optIn = document.createElement('option');
+              optIn.value = 'inbound|1';
+              optIn.innerText = '往：' + routeData.orig_tc;
+              dirSelect.appendChild(optIn);
+
+              dirSelect.disabled = false;
+            } else {
+              dirSelect.innerHTML = '<option value="">找不到城巴路線 ' + route + '</option>';
+            }
+          })
+          .catch(function() {
+            dirSelect.innerHTML = '<option value="">找不到城巴路線 ' + route + '</option>';
+          });
       }
-    });
-}
+    }
+
+    // 搜尋車站 (修正城巴 API 網址)
+    function fetchStops(idx) {
+      var dirVal = document.getElementById('dir-' + idx).value;
+      if (!dirVal) return;
+      var parts = dirVal.split('|');
+      busConfigs[idx].bound = parts[0];
+      busConfigs[idx].serviceType = parts[1];
+
+      var stopSelect = document.getElementById('stop-' + idx);
+      stopSelect.innerHTML = '<option value="">載入車站中...</option>';
+
+      var url = busConfigs[idx].company === 'KMB'
+        ? 'https://data.etabus.gov.hk/v1/transport/kmb/route-stop/' + busConfigs[idx].route + '/' + busConfigs[idx].bound + '/' + busConfigs[idx].serviceType
+        : 'https://rt.data.gov.hk/v2/transport/citybus/route-stop/ctb/' + busConfigs[idx].route + '/' + busConfigs[idx].bound;
+
+      fetch(url)
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+          stopSelect.innerHTML = '<option value="">-- 請選擇車站位置 --</option>';
+          if (data.data && data.data.length > 0) {
+            var promises = data.data.slice(0, 35).map(function(stop) {
+              var stopUrl = busConfigs[idx].company === 'KMB'
+                ? 'https://data.etabus.gov.hk/v1/transport/kmb/stop/' + stop.stop
+                : 'https://rt.data.gov.hk/v2/transport/citybus/stop/' + stop.stop;
+              return fetch(stopUrl).then(function(r) { return r.json(); });
+            });
+
+            Promise.all(promises).then(function(stopDetails) {
+              stopDetails.forEach(function(detail, index) {
+                if (detail.data) {
+                  var opt = document.createElement('option');
+                  opt.value = detail.data.stop;
+                  opt.innerText = (index + 1) + '. ' + detail.data.name_tc;
+                  stopSelect.appendChild(opt);
+                }
+              });
+              stopSelect.disabled = false;
+            });
+          }
+        });
+    }
+
+    // 儲存並取得 ETA
+    function saveAndGetETA(idx) {
+      var stopSelect = document.getElementById('stop-' + idx);
+      if (!stopSelect.value) return;
+
+      busConfigs[idx].stopId = stopSelect.value;
+      busConfigs[idx].stopName = stopSelect.options[stopSelect.selectedIndex].text;
+
+      document.getElementById('title-' + idx).innerText = busConfigs[idx].company + ' ' + busConfigs[idx].route + ' (' + busConfigs[idx].stopName + ')';
+      document.getElementById('config-' + idx).classList.remove('show');
+
+      fetchETAForIndex(idx);
+    }
+
+    // 取得即時到站時間 (修正城巴 API 網址)
+    function fetchETAForIndex(idx) {
+      var cfg = busConfigs[idx];
+      if (!cfg.stopId || !cfg.active) return;
+
+      var url = cfg.company === 'KMB'
+        ? 'https://data.etabus.gov.hk/v1/transport/kmb/eta/' + cfg.stopId + '/' + cfg.route + '/' + cfg.serviceType
+        : 'https://rt.data.gov.hk/v2/transport/citybus/eta/ctb/' + cfg.stopId + '/' + cfg.route;
+
+      fetch(url)
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+          var etaDisplay = document.getElementById('eta-' + idx);
+          if (data.data && data.data.length > 0) {
+            var validEtas = data.data
+              .filter(function(item) { return item.eta !== null && item.eta !== ''; })
+              .slice(0, 3)
+              .map(function(item) {
+                var diff = Math.round((new Date(item.eta) - new Date()) / 60000);
+                return diff <= 0 ? '即將到站' : diff + ' 分鐘';
+              });
+
+            if (validEtas.length === 0) {
+              etaDisplay.innerHTML = '<div style="color:#888; font-size:13px;">尾班車已過或暫無班次</div>';
+              return;
+            }
+
+            var html = '<div class="eta-first">' + validEtas[0] + '</div>';
+            if (validEtas.length > 1) {
+              html += '<div class="eta-next">';
+              if (validEtas[1]) html += '<div>下班: <span>' + validEtas[1] + '</span></div>';
+              if (validEtas[2]) html += '<div>下下班: <span>' + validEtas[2] + '</span></div>';
+              html += '</div>';
+            }
+            etaDisplay.innerHTML = html;
+          } else {
+            etaDisplay.innerHTML = '<div style="color:#888; font-size:13px;">暫無即時到站資料</div>';
+          }
+        });
+    }
+
+    // 自動每 30 秒更新 ETA
+    setInterval(function() {
+      for (var i = 0; i < 10; i++) {
+        if (busConfigs[i].active && busConfigs[i].stopId) {
+          fetchETAForIndex(i);
+        }
+      }
+    }, 30000);
+  </script>
+</body>
+</html>
