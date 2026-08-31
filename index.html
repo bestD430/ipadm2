@@ -99,7 +99,7 @@
 
     var busConfigs = [];
     for (var i = 0; i < 10; i++) {
-      busConfigs.push({ id: i, active: false, company: 'KMB', ctbCo: 'ctb', route: '', bound: '', serviceType: '', stopId: '', stopName: '' });
+      busConfigs.push({ id: i, active: false, company: 'KMB', ctbCo: 'ctb', route: '', bound: '', serviceType: '', destTc: '', stopId: '', stopName: '' });
     }
 
     function initBusCards() {
@@ -166,7 +166,7 @@
       document.getElementById('config-' + idx).classList.toggle('show');
     }
 
-    // 搜尋路線方向 (專屬 API 支援)
+    // 搜尋路線方向 (儲存目的地中文名稱以供後續比對)
     function fetchDirections(idx) {
       var company = document.getElementById('company-' + idx).value;
       var route = document.getElementById('route-input-' + idx).value.trim().toUpperCase();
@@ -192,7 +192,7 @@
                 matched.forEach(function(item) {
                   var opt = document.createElement('option');
                   var boundCode = item.bound === 'O' ? 'outbound' : 'inbound';
-                  opt.value = boundCode + '|' + item.service_type;
+                  opt.value = boundCode + '|' + item.service_type + '|' + item.dest_tc;
                   opt.innerText = '往：' + item.dest_tc;
                   dirSelect.appendChild(opt);
                 });
@@ -212,12 +212,12 @@
               busConfigs[idx].ctbCo = 'ctb';
               
               var optOut = document.createElement('option');
-              optOut.value = 'outbound|1';
+              optOut.value = 'outbound|1|' + routeData.dest_tc;
               optOut.innerText = '往：' + routeData.dest_tc;
               dirSelect.appendChild(optOut);
 
               var optIn = document.createElement('option');
-              optIn.value = 'inbound|1';
+              optIn.value = 'inbound|1|' + routeData.orig_tc;
               optIn.innerText = '往：' + routeData.orig_tc;
               dirSelect.appendChild(optIn);
 
@@ -239,6 +239,7 @@
       var parts = dirVal.split('|');
       busConfigs[idx].bound = parts[0];
       busConfigs[idx].serviceType = parts[1];
+      busConfigs[idx].destTc = parts[2] || '';
 
       var stopSelect = document.getElementById('stop-' + idx);
       stopSelect.innerHTML = '<option value="">載入車站中...</option>';
@@ -288,7 +289,7 @@
       fetchETAForIndex(idx);
     }
 
-    // 取得即時到站時間 (修正雙向資料過濾邏輯)
+    // 取得即時到站時間 (採用目的地名稱精準過濾方向)
     function fetchETAForIndex(idx) {
       var cfg = busConfigs[idx];
       if (!cfg.stopId || !cfg.active) return;
@@ -302,14 +303,20 @@
         .then(function(data) {
           var etaDisplay = document.getElementById('eta-' + idx);
           if (data.data && data.data.length > 0) {
-            
             var rawList = data.data;
-            // 關鍵修正：若為城巴，根據已選取的去程/回程方向進行正確過濾 (O: outbound, I: inbound)
-            if (cfg.company === 'CTB') {
-              var targetDir = cfg.bound === 'outbound' ? 'O' : 'I';
-              rawList = rawList.filter(function(item) {
-                return item.dir === targetDir;
+
+            // 核心修正：利用目的地名稱比對 (去除空格與括號干擾)，完全精準過濾方向
+            if (cfg.destTc) {
+              var targetClean = cfg.destTc.replace(/[\s\(\)（）]/g, '');
+              var filtered = rawList.filter(function(item) {
+                if (!item.dest_tc) return true;
+                var itemClean = item.dest_tc.replace(/[\s\(\)（）]/g, '');
+                return itemClean.includes(targetClean) || targetClean.includes(itemClean);
               });
+
+              if (filtered.length > 0) {
+                rawList = filtered;
+              }
             }
 
             var validEtas = rawList
