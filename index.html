@@ -166,7 +166,7 @@
       document.getElementById('config-' + idx).classList.toggle('show');
     }
 
-    // 搜尋路線方向 (修正城巴 API 網址與結構)
+    // 搜尋路線方向 (專屬 API 支援)
     function fetchDirections(idx) {
       var company = document.getElementById('company-' + idx).value;
       var route = document.getElementById('route-input-' + idx).value.trim().toUpperCase();
@@ -203,7 +203,6 @@
             }
           });
       } else {
-        // 使用 rt.data.gov.hk/v2 專屬城巴 API
         fetch('https://rt.data.gov.hk/v2/transport/citybus/route/ctb/' + route)
           .then(function(res) { return res.json(); })
           .then(function(res) {
@@ -233,7 +232,7 @@
       }
     }
 
-    // 搜尋車站 (修正城巴 API 網址)
+    // 搜尋車站
     function fetchStops(idx) {
       var dirVal = document.getElementById('dir-' + idx).value;
       if (!dirVal) return;
@@ -289,7 +288,7 @@
       fetchETAForIndex(idx);
     }
 
-    // 取得即時到站時間 (修正城巴 API 網址)
+    // 取得即時到站時間 (修正雙向資料過濾邏輯)
     function fetchETAForIndex(idx) {
       var cfg = busConfigs[idx];
       if (!cfg.stopId || !cfg.active) return;
@@ -303,7 +302,17 @@
         .then(function(data) {
           var etaDisplay = document.getElementById('eta-' + idx);
           if (data.data && data.data.length > 0) {
-            var validEtas = data.data
+            
+            var rawList = data.data;
+            // 關鍵修正：若為城巴，根據已選取的去程/回程方向進行正確過濾 (O: outbound, I: inbound)
+            if (cfg.company === 'CTB') {
+              var targetDir = cfg.bound === 'outbound' ? 'O' : 'I';
+              rawList = rawList.filter(function(item) {
+                return item.dir === targetDir;
+              });
+            }
+
+            var validEtas = rawList
               .filter(function(item) { return item.eta !== null && item.eta !== ''; })
               .slice(0, 3)
               .map(function(item) {
