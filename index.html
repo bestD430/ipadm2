@@ -39,6 +39,7 @@
     
     select, input, button { background: #333; color: #FFF; border: 1px solid #555; padding: 6px; border-radius: 4px; font-size: 13px; }
     .search-btn { background: #1E88E5; border: none; font-weight: bold; cursor: pointer; }
+    .save-btn { background: #4CAF50; border: none; font-weight: bold; cursor: pointer; margin-top: 4px; }
 
     /* 到站時間顯示 */
     .eta-display { text-align: center; margin-top: 6px; }
@@ -118,20 +119,30 @@
             </div>
 
             <div class="config-panel" id="config-${i}">
-              <select id="company-${i}">
+              <select id="company-${i}" onchange="toggleCompanyInput(${i})">
                 <option value="KMB">九巴 / 龍運 (KMB/LWB)</option>
                 <option value="CTB">城巴 (Citybus)</option>
               </select>
+              
               <div style="display:flex; gap:6px;">
                 <input type="text" id="route-input-${i}" placeholder="路線 (如 603 / E21A)" style="flex:1;">
-                <button class="search-btn" onclick="fetchDirections(${i})">搜尋</button>
+                <button class="search-btn" id="search-btn-${i}" onclick="fetchDirections(${i})">搜尋</button>
               </div>
+
               <select id="dir-${i}" onchange="fetchStops(${i})" disabled>
                 <option value="">-- 請先輸入路線 --</option>
               </select>
+
+              <!-- 九巴專用：下拉選單選站 -->
               <select id="stop-${i}" onchange="saveAndGetETA(${i})" disabled>
                 <option value="">-- 請選擇車站 --</option>
               </select>
+
+              <!-- 城巴專用：直接輸入車站代碼 -->
+              <div id="ctb-stop-container-${i}" style="display:none; flex-direction:column; gap:6px;">
+                <input type="text" id="ctb-stop-input-${i}" placeholder="請輸入城巴車站代碼 (如 002341)">
+                <button class="save-btn" onclick="saveCtbETA(${i})">確認並儲存</button>
+              </div>
             </div>
 
             <div class="eta-display" id="eta-${i}">
@@ -143,6 +154,20 @@
       container.innerHTML = html;
     }
     initBusCards();
+
+    function toggleCompanyInput(idx) {
+      var company = document.getElementById('company-' + idx).value;
+      var stopSelect = document.getElementById('stop-' + idx);
+      var ctbContainer = document.getElementById('ctb-stop-container-' + idx);
+
+      if (company === 'CTB') {
+        stopSelect.style.display = 'none';
+        ctbContainer.style.display = 'flex';
+      } else {
+        stopSelect.style.display = 'block';
+        ctbContainer.style.display = 'none';
+      }
+    }
 
     function addNewCard() {
       for (var i = 0; i < 10; i++) {
@@ -166,7 +191,7 @@
       document.getElementById('config-' + idx).classList.toggle('show');
     }
 
-    // 搜尋路線方向 (儲存目的地中文名稱以供後續比對)
+    // 搜尋路線方向
     function fetchDirections(idx) {
       var company = document.getElementById('company-' + idx).value;
       var route = document.getElementById('route-input-' + idx).value.trim().toUpperCase();
@@ -232,7 +257,7 @@
       }
     }
 
-    // 搜尋車站
+    // 搜尋九巴車站選單
     function fetchStops(idx) {
       var dirVal = document.getElementById('dir-' + idx).value;
       if (!dirVal) return;
@@ -241,23 +266,18 @@
       busConfigs[idx].serviceType = parts[1];
       busConfigs[idx].destTc = parts[2] || '';
 
+      if (busConfigs[idx].company === 'CTB') return;
+
       var stopSelect = document.getElementById('stop-' + idx);
       stopSelect.innerHTML = '<option value="">載入車站中...</option>';
 
-      var url = busConfigs[idx].company === 'KMB'
-        ? 'https://data.etabus.gov.hk/v1/transport/kmb/route-stop/' + busConfigs[idx].route + '/' + busConfigs[idx].bound + '/' + busConfigs[idx].serviceType
-        : 'https://rt.data.gov.hk/v2/transport/citybus/route-stop/ctb/' + busConfigs[idx].route + '/' + busConfigs[idx].bound;
-
-      fetch(url)
+      fetch('https://data.etabus.gov.hk/v1/transport/kmb/route-stop/' + busConfigs[idx].route + '/' + busConfigs[idx].bound + '/' + busConfigs[idx].serviceType)
         .then(function(res) { return res.json(); })
         .then(function(data) {
           stopSelect.innerHTML = '<option value="">-- 請選擇車站位置 --</option>';
           if (data.data && data.data.length > 0) {
             var promises = data.data.slice(0, 35).map(function(stop) {
-              var stopUrl = busConfigs[idx].company === 'KMB'
-                ? 'https://data.etabus.gov.hk/v1/transport/kmb/stop/' + stop.stop
-                : 'https://rt.data.gov.hk/v2/transport/citybus/stop/' + stop.stop;
-              return fetch(stopUrl).then(function(r) { return r.json(); });
+              return fetch('https://data.etabus.gov.hk/v1/transport/kmb/stop/' + stop.stop).then(function(r) { return r.json(); });
             });
 
             Promise.all(promises).then(function(stopDetails) {
@@ -275,7 +295,7 @@
         });
     }
 
-    // 儲存並取得 ETA
+    // 儲存九巴設定
     function saveAndGetETA(idx) {
       var stopSelect = document.getElementById('stop-' + idx);
       if (!stopSelect.value) return;
@@ -289,7 +309,34 @@
       fetchETAForIndex(idx);
     }
 
-    // 取得即時到站時間 (採用目的地名稱精準過濾方向)
+    // 儲存城巴設定 (直接讀取輸入框代碼並調用 Stop API 取得站名)
+    function saveCtbETA(idx) {
+      var stopInput = document.getElementById('ctb-stop-input-' + idx).value.trim();
+      if (!stopInput) return;
+
+      busConfigs[idx].stopId = stopInput;
+
+      fetch('https://rt.data.gov.hk/v2/transport/citybus/stop/' + stopInput)
+        .then(function(res) { return res.json(); })
+        .then(function(res) {
+          var stopName = (res.data && res.data.name_tc) ? res.data.name_tc : stopInput;
+          busConfigs[idx].stopName = stopName;
+
+          document.getElementById('title-' + idx).innerText = '城巴 ' + busConfigs[idx].route + ' (' + stopName + ')';
+          document.getElementById('config-' + idx).classList.remove('show');
+
+          fetchETAForIndex(idx);
+        })
+        .catch(function() {
+          busConfigs[idx].stopName = stopInput;
+          document.getElementById('title-' + idx).innerText = '城巴 ' + busConfigs[idx].route + ' (站號: ' + stopInput + ')';
+          document.getElementById('config-' + idx).classList.remove('show');
+
+          fetchETAForIndex(idx);
+        });
+    }
+
+    // 取得即時到站時間 (目的地過濾)
     function fetchETAForIndex(idx) {
       var cfg = busConfigs[idx];
       if (!cfg.stopId || !cfg.active) return;
@@ -305,7 +352,6 @@
           if (data.data && data.data.length > 0) {
             var rawList = data.data;
 
-            // 核心修正：利用目的地名稱比對 (去除空格與括號干擾)，完全精準過濾方向
             if (cfg.destTc) {
               var targetClean = cfg.destTc.replace(/[\s\(\)（）]/g, '');
               var filtered = rawList.filter(function(item) {
