@@ -54,7 +54,7 @@
         }
 
         #clock {
-            font-size: 3.2rem;
+            font-size: 2.88rem;
             font-weight: 700;
             letter-spacing: 2px;
             color: #38bdf8;
@@ -84,9 +84,9 @@
             border: 1px solid #334155;
         }
 
-        .weather-icon { width: 24px; height: 24px; object-fit: contain; }
-        .weather-emoji { font-size: 1.1rem; line-height: 1; }
-        .weather-temp { font-size: 1rem; font-weight: bold; color: #38bdf8; }
+        .weather-icon { width: 36px; height: 36px; object-fit: contain; }
+        .weather-emoji { font-size: 1.65rem; line-height: 1; }
+        .weather-temp { font-size: 1.5rem; font-weight: bold; color: #38bdf8; }
 
         .weather-warnings {
             display: flex;
@@ -99,9 +99,9 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            padding: 2px 10px;
+            padding: 3px 15px;
             border-radius: 20px;
-            font-size: 0.8rem;
+            font-size: 1.2rem;
             font-weight: bold;
             color: #ffffff;
             box-shadow: 0 2px 4px rgba(0,0,0,0.3);
@@ -121,7 +121,7 @@
             color: #ffffff;
             padding: 10px 14px;
             border-radius: 12px;
-            font-size: 1rem;
+            font-size: 1.5rem;
             font-weight: bold;
             text-align: center;
             margin-bottom: 12px;
@@ -189,75 +189,53 @@
         .bus-item.item-lwb { background: #ea580c; color: #ffffff; }
         .bus-item.item-ctb { background: #eab308; color: #000000; }
 
-        /* 更改後的排版結構：左右分欄 */
-        .bus-row-content {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 12px;
-        }
-
-        .bus-left-col {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            flex-shrink: 0;
-        }
-
-        .bus-company-tag { font-size: 0.75rem; padding: 2px 6px; border-radius: 4px; font-weight: bold; margin-bottom: 2px; }
+        .bus-header { display: flex; justify-content: space-between; align-items: baseline; }
+        .bus-title-group { display: flex; align-items: center; gap: 8px; }
+        
+        .bus-company-tag { font-size: 0.75rem; padding: 2px 6px; border-radius: 4px; font-weight: bold; }
         .tag-kmb { background: rgba(0, 0, 0, 0.25); color: #ffffff; }
         .tag-lwb { background: rgba(0, 0, 0, 0.25); color: #ffffff; }
         .tag-ctb { background: rgba(0, 0, 0, 0.15); color: #000000; }
 
-        .bus-name { font-size: 3rem; font-weight: 700; letter-spacing: 2px; line-height: 1; }
+        .bus-name { font-size: 3.15rem; font-weight: 700; letter-spacing: 2px; line-height: 1; }
         .item-kmb .bus-name, .item-lwb .bus-name { color: #ffffff; }
         .item-ctb .bus-name { color: #000000; }
 
-        .bus-middle-col {
-            flex: 1;
+        .bus-dest { 
+            font-size: 0.85rem; 
+            font-weight: 500; 
+            text-align: right; 
             display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
+            align-items: baseline;
+            justify-content: flex-end;
             gap: 4px;
-            min-width: 0;
         }
+        .bus-origin-text { font-size: 1.15rem; font-weight: 800; }
+        .bus-dest-text { font-size: 0.85rem; font-weight: 500; opacity: 0.9; }
 
-        .bus-origin-text { font-size: 1.1rem; font-weight: 800; line-height: 1.2; word-break: break-all; }
-        .bus-dest-text { font-size: 0.85rem; font-weight: 500; opacity: 0.9; line-height: 1.2; word-break: break-all; }
+        .item-kmb .bus-dest, .item-lwb .bus-dest { color: #ffffff; }
+        .item-ctb .bus-dest { color: #000000; }
 
-        .item-kmb .bus-middle-col, .item-lwb .bus-middle-col { color: #ffffff; }
-        .item-ctb .bus-middle-col { color: #000000; }
-
-        .bus-right-col {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-            flex-shrink: 0;
-            min-width: 120px;
-        }
-
-        .eta-group { display: flex; gap: 6px; align-items: center; width: 100%; justify-content: flex-end; }
+        .eta-group { display: flex; gap: 8px; align-items: center; }
         .eta-badge {
+            flex: 1;
             background: #0f172a;
             border-radius: 6px;
-            padding: 6px 8px;
+            padding: 8px 4px;
             text-align: center;
             font-size: 0.85rem;
             font-weight: bold;
             color: #94a3b8;
             border: 1px solid #475569;
-            min-width: 45px;
         }
         .eta-badge.first {
+            flex: 1.6;
             background: #064e3b;
             color: #34d399;
             border-color: #10b981;
-            font-size: 1.3rem;
+            font-size: 1.5rem;
             font-weight: 900;
-            padding: 4px 10px;
-            min-width: 80px;
+            padding: 6px 4px;
         }
         .eta-badge.first.arr {
             background: #881337;
@@ -351,27 +329,28 @@
         @media (min-width: 768px) {
             body { padding: 24px; gap: 8px; }
             header { padding-bottom: 16px; border-bottom: 2px solid #334155; }
-            #clock { font-size: 5.2rem; letter-spacing: 4px; }
+            #clock { font-size: 4.68rem; letter-spacing: 4px; }
             #date { font-size: 1.2rem; }
             .weather-sub-bar { gap: 12px; }
             .weather-info-box { padding: 4px 14px; border-radius: 30px; gap: 8px; }
-            .weather-icon { width: 32px; height: 32px; }
-            .weather-emoji { font-size: 1.4rem; }
-            .weather-temp { font-size: 1.3rem; }
-            .warning-badge { padding: 6px 14px; font-size: 1rem; border-radius: 20px; }
-            .school-notice { font-size: 1.3rem; padding: 16px; border-radius: 16px; margin-bottom: 16px; }
+            .weather-icon { width: 48px; height: 48px; }
+            .weather-emoji { font-size: 2.1rem; }
+            .weather-temp { font-size: 1.95rem; }
+            .warning-badge { padding: 9px 21px; font-size: 1.5rem; border-radius: 20px; }
+            .school-notice { font-size: 1.95rem; padding: 16px; border-radius: 16px; margin-bottom: 16px; }
             .bus-panel { padding: 24px; border-radius: 24px; }
             .panel-title { font-size: 1.4rem; margin-bottom: 20px; }
             .settings-btn { font-size: 1.1rem; padding: 10px 20px; }
             .bus-list { gap: 16px; padding-right: 8px; }
-            .bus-item { padding: 18px 24px; border-radius: 16px; }
-            .bus-company-tag { font-size: 1rem; padding: 4px 10px; border-radius: 6px; margin-bottom: 4px; }
-            .bus-name { font-size: 4.2rem; letter-spacing: 3px; }
-            .bus-origin-text { font-size: 1.6rem; }
-            .bus-dest-text { font-size: 1.2rem; }
-            .eta-group { gap: 10px; }
-            .eta-badge { font-size: 1.1rem; padding: 10px 12px; border-radius: 8px; min-width: 65px; }
-            .eta-badge.first { font-size: 2.2rem; padding: 8px 16px; border-radius: 10px; min-width: 120px; }
+            .bus-item { padding: 20px 24px; border-radius: 16px; gap: 16px; }
+            .bus-company-tag { font-size: 1rem; padding: 4px 10px; border-radius: 6px; }
+            .bus-name { font-size: 4.32rem; letter-spacing: 3px; }
+            .bus-dest { gap: 8px; }
+            .bus-origin-text { font-size: 1.8rem; }
+            .bus-dest-text { font-size: 1.3rem; }
+            .eta-group { gap: 12px; }
+            .eta-badge { font-size: 1.3rem; padding: 14px 8px; border-radius: 12px; }
+            .eta-badge.first { font-size: 2.4rem; padding: 12px 8px; border-radius: 12px; }
             .modal-content { max-width: 800px; padding: 24px; gap: 16px; }
             .modal-title { font-size: 1.4rem; }
             .modal-close { font-size: 2.2rem; }
@@ -762,27 +741,19 @@
                     else companyTag = '<span class="bus-company-tag tag-ctb">城巴</span>';
 
                     var itemClass = bus.company === 'kmb' ? 'item-kmb' : (bus.company === 'lwb' ? 'item-lwb' : 'item-ctb');
-                    var originText = bus.origin_name ? '<div class="bus-origin-text">' + bus.origin_name + '</div>' : '';
-                    var destText = bus.dest_name ? '<div class="bus-dest-text">' + bus.dest_name + '</div>' : '';
+                    var originText = bus.origin_name ? '<span class="bus-origin-text">' + bus.origin_name + '</span>' : '';
+                    var destText = bus.dest_name ? '<span class="bus-dest-text">' + bus.dest_name + '</span>' : '';
+                    var routeDirectionHtml = (originText && destText) ? originText + ' <span style="font-size: 0.8rem; opacity: 0.7;">➔</span> ' + destText : (originText || destText);
 
-                    // 重新組裝的左、中、右欄結構
                     busResults[index] = '<div class="bus-item ' + itemClass + '">' +
-                        '<div class="bus-row-content">' +
-                            '<div class="bus-left-col">' +
-                                companyTag +
-                                '<div class="bus-name">' + bus.route.toUpperCase() + '</div>' +
-                            '</div>' +
-                            '<div class="bus-middle-col">' +
-                                originText +
-                                destText +
-                            '</div>' +
-                            '<div class="bus-right-col">' +
-                                '<div class="eta-group">' +
-                                    '<div class="eta-badge first ' + (isArr ? 'arr' : '') + '">' + etas[0] + '</div>' +
-                                    '<div class="eta-badge">' + etas[1] + '</div>' +
-                                    '<div class="eta-badge">' + etas[2] + '</div>' +
-                                '</div>' +
-                            '</div>' +
+                        '<div class="bus-header">' +
+                            '<div class="bus-title-group">' + companyTag + '<div class="bus-name">' + bus.route.toUpperCase() + '</div></div>' +
+                            '<div class="bus-dest">' + routeDirectionHtml + '</div>' +
+                        '</div>' +
+                        '<div class="eta-group">' +
+                            '<div class="eta-badge first ' + (isArr ? 'arr' : '') + '">' + etas[0] + '</div>' +
+                            '<div class="eta-badge">' + etas[1] + '</div>' +
+                            '<div class="eta-badge">' + etas[2] + '</div>' +
                         '</div>' +
                     '</div>';
 
@@ -1135,8 +1106,8 @@
 
             for (var i = 0; i < items.length; i++) {
                 var item = items[i];
-                var company = item.querySelector('.bus-company`+'value;'+
-                'var route = item.querySelector('.bus-route').value.trim();
+                var company = item.querySelector('.bus-company').value;
+                var route = item.querySelector('.bus-route').value.trim();
                 var dir = item.querySelector('.bus-dir').value;
                 var stop = item.querySelector('.bus-stop').value;
                 var origin_name = item.querySelector('.bus-origin').value.trim();
@@ -1156,4 +1127,3 @@
     </script>
 </body>
 </html>
-
