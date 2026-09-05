@@ -643,7 +643,7 @@
         
         var mtrRoutesData = {
             "KTL": { name: "觀塘綫", stops: [ {code:"WHA", name:"黃埔"}, {code:"HOM", name:"何文田"}, {code:"YMT", name:"油麻地"}, {code:"MOK", name:"旺角"}, {code:"PRE", name:"太子"}, {code:"SKM", name:"石硤尾"}, {code:"KOT", name:"九龍塘"}, {code:"LOF", name:"樂富"}, {code:"WTS", name:"黃大仙"}, {code:"DIH", name:"鑽石山"}, {code:"CHH", name:"彩虹"}, {code:"KOB", name:"九龍灣"}, {code:"NTK", name:"牛頭角"}, {code:"KWT", name:"觀塘"}, {code:"LAT", name:"藍田"}, {code:"YAT", name:"油塘"}, {code:"TIK", name:"調景嶺"} ] },
-            "ISL": { name: "港島綫", stops: [ {code:"KET", name:"堅尼地城"}, {code:"HKU", name:"香港大學"}, {code:"SYP", name:"西營盤"}, {code:"SHW", name:"上環"}, {code:"CEN", name:"中環"}, {code:"ADM", name:"金鐘"}, {code:"WAC", name:"灣仔"}, {code:"CAB", name:"銅邏灣"}, {code:"TIH", name:"天后"}, {code:"FOH", name:"炮台山"}, {code:"NOP", name:"北角"}, {code:"QUB", name:"鰂魚涌"}, {code:"TAK", name:"太古"}, {code:"SWH", name:"西灣河"}, {code:"SKW", name:"筲箕灣"}, {code:"HFC", name:"杏花邨"}, {code:"CHW", name:"柴灣"} ] },
+            "ISL": { name: "港島綫", stops: [ {code:"KET", name:"堅尼地城"}, {code:"HKU", name:"香港大學"}, {code:"SYP", name:"西營盤"}, {code:"SHW", name:"上環"}, {code:"CEN", name:"中環"}, {code:"ADM", name:"金鐘"}, {code:"WAC", name:"灣仔"}, {code:"CAB", name:"銅鑼灣"}, {code:"TIH", name:"天后"}, {code:"FOH", name:"炮台山"}, {code:"NOP", name:"北角"}, {code:"QUB", name:"鰂魚涌"}, {code:"TAK", name:"太古"}, {code:"SWH", name:"西灣河"}, {code:"SKW", name:"筲箕灣"}, {code:"HFC", name:"杏花邨"}, {code:"CHW", name:"柴灣"} ] },
             "TWL": { name: "荃灣綫", stops: [ {code:"CEN", name:"中環"}, {code:"ADM", name:"金鐘"}, {code:"TST", name:"尖沙咀"}, {code:"JOR", name:"佐敦"}, {code:"YMT", name:"油麻地"}, {code:"MOK", name:"旺角"}, {code:"PRE", name:"太子"}, {code:"SSP", name:"深水埗"}, {code:"CSW", name:"長沙灣"}, {code:"LCK", name:"荔枝角"}, {code:"MEFO", name:"美孚"}, {code:"LAK", name:"荔景"}, {code:"KWF", name:"葵芳"}, {code:"KWT", name:"葵興"}, {code:"TWH", name:"大窩口"}, {code:"TSW", name:"荃灣"} ] },
             "SIL": { name: "南港島綫", stops: [ {code:"ADM", name:"金鐘"}, {code:"OCP", name:"海洋公園"}, {code:"WCH", name:"黃竹坑"}, {code:"LET", name:"利東"}, {code:"SOH", name:"海怡半島"} ] },
             "TCL": { name: "東涌綫", stops: [ {code:"HOK", name:"香港"}, {code:"KOW", name:"九龍"}, {code:"OLY", name:"奧運"}, {code:"NAC", name:"南昌"}, {code:"LAK", name:"荔景"}, {code:"TSY", name:"青衣"}, {code:"SUN", name:"欣澳"}, {code:"TUC", name:"東涌"} ] },
@@ -932,10 +932,11 @@
         setInterval(fetchWeatherData, 60000);
         setInterval(fetchGovPressRelease, 60000);
 
+        // 預設東涌往香港方向改為 DN
         var defaultBuses = [
             { company: "lwb", route: "E36A", dir: "inbound", stop: "TC188", origin_name: "東涌", dest_name: "往 元朗", offset: 0 },
             { company: "ctb", route: "E33", dir: "outbound", stop: "001854", origin_name: "屯門", dest_name: "往 機場/東涌", offset: 0 },
-            { company: "mtr", route: "TCL", dir: "UP", stop: "TUC", origin_name: "東涌", dest_name: "往 香港", offset: 0 }
+            { company: "mtr", route: "TCL", dir: "DN", stop: "TUC", origin_name: "東涌", dest_name: "往 香港", offset: 0 }
         ];
 
         var currentBuses = [];
@@ -949,6 +950,10 @@
                     currentBuses = [];
                     for (var i = 0; i < parsed.length; i++) {
                         if (parsed[i].company !== 'nlb') {
+                            // 修復歷史舊設定：若是舊版的東涌站且方向設為了 UP，自動糾正為 DN
+                            if (parsed[i].company === 'mtr' && parsed[i].route === 'TCL' && parsed[i].stop === 'TUC' && parsed[i].dir === 'UP') {
+                                parsed[i].dir = 'DN';
+                            }
                             currentBuses.push(parsed[i]);
                         }
                     }
@@ -1015,7 +1020,7 @@
             }
         }
 
-        // [修正] 港鐵到站時間 API 獲取與解析邏輯
+        // 港鐵到站時間 API 獲取與解析邏輯
         function getMTRETA(line, station, dir, callback) {
             if (!line || !station) { callback([]); return; }
             var lineUpper = line.toUpperCase();
@@ -1030,7 +1035,7 @@
                         var key = lineUpper + '-' + staUpper;
                         var trainData = data.data[key];
                         if (trainData) {
-                            var targetDir = dir || 'UP';
+                            var targetDir = dir || 'DN';
                             var trains = trainData[targetDir] || [];
                             
                             // 若指定方向無列車，嘗試合併 UP 及 DN 班次
@@ -1096,7 +1101,7 @@
 
             var loopFn = function(index) {
                 var bus = currentBuses[index];
-                var busDir = bus.dir || (bus.company === 'mtr' ? 'UP' : 'outbound');
+                var busDir = bus.dir || (bus.company === 'mtr' ? 'DN' : 'outbound');
                 var busOffset = parseFloat(bus.offset || 0);
                 var busKey = bus.company + '_' + bus.route + '_' + busDir + '_' + bus.stop;
 
@@ -1232,7 +1237,7 @@
 
             for (var i = 0; i < currentBuses.length; i++) {
                 var bus = currentBuses[i];
-                var busDir = bus.dir || (bus.company === 'mtr' ? 'UP' : 'outbound');
+                var busDir = bus.dir || (bus.company === 'mtr' ? 'DN' : 'outbound');
                 var busOffset = bus.offset !== undefined ? bus.offset : 0;
 
                 var itemHtml = '<div class="config-item" data-index="' + i + '" data-current-stop="' + bus.stop + '" data-current-dir="' + busDir + '">' +
@@ -1313,7 +1318,7 @@
             loadStopOptions(index, false);
         }
 
-        // [修正] 港鐵方向對應邏輯（UP 表示往首站，DN 表示往尾站）
+        // 港鐵方向對應：DN 代表往尾站（如東涌往香港），UP 代表往首站（如香港往東涌）
         function updateDirectionOptions(index, isUserAction, callback) {
             var items = document.querySelectorAll('.config-item');
             var item = items[index];
@@ -1323,7 +1328,7 @@
             var routeInput = item.querySelector('.bus-route');
             var route = routeInput.value.trim().toUpperCase();
             var dirSelect = item.querySelector('.bus-dir');
-            var currentDir = item.getAttribute('data-current-dir') || (company === 'mtr' ? 'UP' : 'outbound');
+            var currentDir = item.getAttribute('data-current-dir') || (company === 'mtr' ? 'DN' : 'outbound');
             var destInput = item.querySelector('.bus-dest');
 
             if (company === 'mtr') {
@@ -1333,11 +1338,11 @@
                 if (lineInfo && lineInfo.stops.length > 0) {
                     var firstStopName = lineInfo.stops[0].name;
                     var lastStopName = lineInfo.stops[lineInfo.stops.length - 1].name;
-                    // UP 代表上行方向（往首站如香港），DN 代表下行方向（往尾站如東涌）
-                    dirSelect.innerHTML = '<option value="UP">往 ' + firstStopName + '</option>' +
-                                           '<option value="DN">往 ' + lastStopName + '</option>';
+                    // DN 代表下行方向（往尾站如香港/柴灣），UP 代表上行方向（往首站如堅尼地城）
+                    dirSelect.innerHTML = '<option value="DN">往 ' + firstStopName + '</option>' +
+                                           '<option value="UP">往 ' + lastStopName + '</option>';
                 } else {
-                    dirSelect.innerHTML = '<option value="UP">往 上行方向</option><option value="DN">往 下行方向</option>';
+                    dirSelect.innerHTML = '<option value="DN">往 下行方向</option><option value="UP">往 上行方向</option>';
                 }
                 finalizeDir(dirSelect, item, currentDir, isUserAction, destInput, callback);
                 return;
@@ -1419,7 +1424,7 @@
                 var company = item.querySelector('.bus-company').value;
                 var route = item.querySelector('.bus-route').value.trim().toUpperCase();
                 var dirSelect = item.querySelector('.bus-dir');
-                var dir = dirSelect.value || (company === 'mtr' ? 'UP' : 'outbound');
+                var dir = dirSelect.value || (company === 'mtr' ? 'DN' : 'outbound');
                 item.setAttribute('data-current-dir', dir);
 
                 var stopSelect = item.querySelector('.bus-stop');
@@ -1577,7 +1582,7 @@
 
         function addNewBusConfig() {
             currentBuses = syncCurrentDOMToBuses();
-            currentBuses.push({ company: "mtr", route: "TCL", dir: "UP", stop: "TUC", origin_name: "東涌", dest_name: "往 香港", offset: 0 });
+            currentBuses.push({ company: "mtr", route: "TCL", dir: "DN", stop: "TUC", origin_name: "東涌", dest_name: "往 香港", offset: 0 });
             renderSettingsList();
         }
 
