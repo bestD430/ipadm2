@@ -932,7 +932,7 @@
         setInterval(fetchWeatherData, 60000);
         setInterval(fetchGovPressRelease, 60000);
 
-        // 預設東涌往香港方向改為 DN
+        // 預設東涌往香港方向（方向設為 DN）
         var defaultBuses = [
             { company: "lwb", route: "E36A", dir: "inbound", stop: "TC188", origin_name: "東涌", dest_name: "往 元朗", offset: 0 },
             { company: "ctb", route: "E33", dir: "outbound", stop: "001854", origin_name: "屯門", dest_name: "往 機場/東涌", offset: 0 },
@@ -1338,7 +1338,7 @@
                 if (lineInfo && lineInfo.stops.length > 0) {
                     var firstStopName = lineInfo.stops[0].name;
                     var lastStopName = lineInfo.stops[lineInfo.stops.length - 1].name;
-                    // DN 代表下行方向（往尾站如香港/柴灣），UP 代表上行方向（往首站如堅尼地城）
+                    // DN 代表下行方向（往尾站如香港/柴灣），UP 代表上行方向（往首站如堅尼地城/東涌）
                     dirSelect.innerHTML = '<option value="DN">往 ' + firstStopName + '</option>' +
                                            '<option value="UP">往 ' + lastStopName + '</option>';
                 } else {
