@@ -1154,7 +1154,11 @@
 
                     function getEtaClass(etaObj) {
                         if (etaObj.mins < 0) return '';
-                        return etaObj.mins <= 10 ? 'eta-red' : 'eta-green';
+                        if (bus.company === 'mtr') {
+                            return etaObj.mins > 3 ? 'eta-green' : 'eta-red';
+                        } else {
+                            return etaObj.mins <= 10 ? 'eta-red' : 'eta-green';
+                        }
                     }
 
                     busResults[index] = '<div class="bus-item ' + cardClass + '">' +
