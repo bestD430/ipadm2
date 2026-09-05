@@ -259,35 +259,35 @@
         .bus-header { display: flex; justify-content: space-between; align-items: baseline; }
         .bus-title-group { display: flex; align-items: center; gap: 8px; }
         
-        /* 基礎標籤樣式：深色底 + 城巴式圍邊 */
+        /* 基礎標籤樣式 */
         .bus-company-tag { 
             font-size: 0.85rem; 
             padding: 3px 8px; 
             border-radius: 6px; 
             font-weight: bold; 
             background: rgba(15, 23, 42, 0.85);
-            border: 2px solid #ffffff;
+            border: 2px solid #000000;
             color: #ffffff;
             display: inline-block;
             box-shadow: 0 2px 4px rgba(0,0,0,0.3);
         }
 
-        /* 城巴式圍邊 (九巴、龍運、城巴) */
-        .card-kmb .bus-company-tag { color: #ffffff; background: #d8121a; border-color: #ffffff; }
-        .card-lwb .bus-company-tag { color: #ffffff; background: #f37021; border-color: #ffffff; }
+        /* 圍邊全部改為黑色 (#000000) */
+        .card-kmb .bus-company-tag { color: #ffffff; background: #d8121a; border-color: #000000; }
+        .card-lwb .bus-company-tag { color: #ffffff; background: #f37021; border-color: #000000; }
         .card-ctb .bus-company-tag { color: #000000; background: #ffcc00; border-color: #000000; }
 
-        /* 城巴式圍邊 (港鐵依路線顏色變更) */
-        .card-mtr-KTL .bus-company-tag { color: #ffffff; background: #007a3d; border-color: #ffffff; }
-        .card-mtr-ISL .bus-company-tag { color: #ffffff; background: #0099e6; border-color: #ffffff; }
-        .card-mtr-TWL .bus-company-tag { color: #ffffff; background: #a80010; border-color: #ffffff; }
+        /* 港鐵各路線標籤圍邊一律改為黑色 */
+        .card-mtr-KTL .bus-company-tag { color: #ffffff; background: #007a3d; border-color: #000000; }
+        .card-mtr-ISL .bus-company-tag { color: #ffffff; background: #0099e6; border-color: #000000; }
+        .card-mtr-TWL .bus-company-tag { color: #ffffff; background: #a80010; border-color: #000000; }
         .card-mtr-SIL .bus-company-tag { color: #000000; background: #b6bd00; border-color: #000000; }
-        .card-mtr-TCL .bus-company-tag { color: #ffffff; background: #c85a00; border-color: #ffffff; }
-        .card-mtr-AEL .bus-company-tag { color: #ffffff; background: #008088; border-color: #ffffff; }
-        .card-mtr-TKL .bus-company-tag { color: #ffffff; background: #a35ebf; border-color: #ffffff; }
-        .card-mtr-TML .bus-company-tag { color: #ffffff; background: #923011; border-color: #ffffff; }
+        .card-mtr-TCL .bus-company-tag { color: #ffffff; background: #c85a00; border-color: #000000; }
+        .card-mtr-AEL .bus-company-tag { color: #ffffff; background: #008088; border-color: #000000; }
+        .card-mtr-TKL .bus-company-tag { color: #ffffff; background: #a35ebf; border-color: #000000; }
+        .card-mtr-TML .bus-company-tag { color: #ffffff; background: #923011; border-color: #000000; }
         .card-mtr-EAL .bus-company-tag { color: #000000; background: #53b7e8; border-color: #000000; }
-        .card-mtr-default .bus-company-tag { color: #ffffff; background: #61132e; border-color: #ffffff; }
+        .card-mtr-default .bus-company-tag { color: #ffffff; background: #61132e; border-color: #000000; }
 
         .bus-name { font-size: 2.835rem; font-weight: 700; letter-spacing: 2px; line-height: 1; color: #ffffff; text-shadow: 0 2px 4px rgba(0,0,0,0.4); }
 
@@ -646,7 +646,7 @@
         
         var mtrRoutesData = {
             "KTL": { name: "觀塘綫", stops: [ {code:"WHA", name:"黃埔"}, {code:"HOM", name:"何文田"}, {code:"YMT", name:"油麻地"}, {code:"MOK", name:"旺角"}, {code:"PRE", name:"太子"}, {code:"SKM", name:"石硤尾"}, {code:"KOT", name:"九龍塘"}, {code:"LOF", name:"樂富"}, {code:"WTS", name:"黃大仙"}, {code:"DIH", name:"鑽石山"}, {code:"CHH", name:"彩虹"}, {code:"KOB", name:"九龍灣"}, {code:"NTK", name:"牛頭角"}, {code:"KWT", name:"觀塘"}, {code:"LAT", name:"藍田"}, {code:"YAT", name:"油塘"}, {code:"TIK", name:"調景嶺"} ] },
-            "ISL": { name: "港島綫", stops: [ {code:"KET", name:"堅尼地城"}, {code:"HKU", name:"香港大學"}, {code:"SYP", name:"西營盤"}, {code:"SHW", name:"上環"}, {code:"CEN", name:"中環"}, {code:"ADM", name:"金鐘"}, {code:"WAC", name:"灣仔"}, {code:"CAB", name:"銅鑼灣"}, {code:"TIH", name:"天后"}, {code:"FOH", name:"炮台山"}, {code:"NOP", name:"北角"}, {code:"QUB", name:"鰂魚涌"}, {code:"TAK", name:"太古"}, {code:"SWH", name:"西灣河"}, {code:"SKW", name:"筲箕灣"}, {code:"HFC", name:"杏花邨"}, {code:"CHW", name:"柴灣"} ] },
+            "ISL": { name: "港島綫", stops: [ {code:"KET", name:"堅尼地城"}, {code:"HKU", name:"香港大學"}, {code:"SYP", name:"西營盤"}, {code:"SHW", name:"上環"}, {code:"CEN", name:"中環"}, {code:"ADM", name:"金鐘"}, {code:"WAC", name:"灣仔"}, {code:"CAB", name:"銅邏灣"}, {code:"TIH", name:"天后"}, {code:"FOH", name:"炮台山"}, {code:"NOP", name:"北角"}, {code:"QUB", name:"鰂魚涌"}, {code:"TAK", name:"太古"}, {code:"SWH", name:"西灣河"}, {code:"SKW", name:"筲箕灣"}, {code:"HFC", name:"杏花邨"}, {code:"CHW", name:"柴灣"} ] },
             "TWL": { name: "荃灣綫", stops: [ {code:"CEN", name:"中環"}, {code:"ADM", name:"金鐘"}, {code:"TST", name:"尖沙咀"}, {code:"JOR", name:"佐敦"}, {code:"YMT", name:"油麻地"}, {code:"MOK", name:"旺角"}, {code:"PRE", name:"太子"}, {code:"SSP", name:"深水埗"}, {code:"CSW", name:"長沙灣"}, {code:"LCK", name:"荔枝角"}, {code:"MEFO", name:"美孚"}, {code:"LAK", name:"荔景"}, {code:"KWF", name:"葵芳"}, {code:"KWT", name:"葵興"}, {code:"TWH", name:"大窩口"}, {code:"TSW", name:"荃灣"} ] },
             "SIL": { name: "南港島綫", stops: [ {code:"ADM", name:"金鐘"}, {code:"OCP", name:"海洋公園"}, {code:"WCH", name:"黃竹坑"}, {code:"LET", name:"利東"}, {code:"SOH", name:"海怡半島"} ] },
             "TCL": { name: "東涌綫", stops: [ {code:"HOK", name:"香港"}, {code:"KOW", name:"九龍"}, {code:"OLY", name:"奧運"}, {code:"NAC", name:"南昌"}, {code:"LAK", name:"荔景"}, {code:"TSY", name:"青衣"}, {code:"SUN", name:"欣澳"}, {code:"TUC", name:"東涌"} ] },
