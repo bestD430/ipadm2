@@ -311,6 +311,22 @@
             border-color: rgba(248, 113, 113, 0.4);
         }
 
+        /* 6-10分鐘紅綠字交替閃爍 */
+        @keyframes flashRedGreen {
+            0%, 49% {
+                color: #f87171;
+                border-color: rgba(248, 113, 113, 0.8);
+            }
+            50%, 100% {
+                color: #34d399;
+                border-color: rgba(52, 211, 153, 0.8);
+            }
+        }
+
+        .eta-badge.eta-flash {
+            animation: flashRedGreen 1s infinite;
+        }
+
         .loading-text { text-align: center; color: #94a3b8; padding: 20px; font-size: 0.9rem; }
 
         #night-screen {
@@ -1070,9 +1086,12 @@
 
                     var displayRoute = bus.route.toUpperCase();
 
+                    // 判斷顏色：<= 5分鐘(長亮紅), 6-10分鐘(紅綠間格閃爍), >10分鐘(長亮綠)
                     function getEtaClass(etaObj) {
                         if (etaObj.mins < 0) return '';
-                        return etaObj.mins <= 10 ? 'eta-red' : 'eta-green';
+                        if (etaObj.mins <= 5) return 'eta-red';
+                        if (etaObj.mins <= 10) return 'eta-flash';
+                        return 'eta-green';
                     }
 
                     busResults[index] = '<div class="bus-item ' + cardClass + '">' +
