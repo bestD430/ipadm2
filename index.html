@@ -410,10 +410,6 @@
         transform: scale(0.97, 1.02);
         transform-origin: center center;
     }
-    /* 將第二及第三班次的時間字體顏色改為白色 */
-    .eta-group .eta-next-group .eta-badge {
-        color: #ffffff !important;
-    }
     .eta-badge.first {
         width: 100%;
         background: rgba(15, 23, 42, 0.85);
@@ -3265,9 +3261,287 @@ function applyStopSelection(
         ) {
             originInput.value =
                 selectedOption.text
+                    .replace(
+                        /^\d+\.\s*/,
+                        ''
+                    );
         }
+    } else if (
+        isUserAction
+    ) {
+        if (originInput) {
+            originInput.value = '';
+        }
+        item.setAttribute(
+            'data-current-stop',
+            ''
+        );
     }
 }
+/* =========================================================
+   車站改變
+   ========================================================= */
+function handleStopChange(index) {
+    var items =
+        document.querySelectorAll(
+            '.config-item'
+        );
+    var item =
+        items[index];
+    if (!item) {
+        return;
+    }
+    var stopSelect =
+        item.querySelector(
+            '.bus-stop'
+        );
+    var originInput =
+        item.querySelector(
+            '.bus-origin'
+        );
+    var selectedOption =
+        stopSelect.options[
+            stopSelect.selectedIndex
+        ];
+    if (
+        selectedOption &&
+        selectedOption.value
+    ) {
+        if (originInput) {
+            originInput.value =
+                selectedOption.text
+                    .replace(
+                        /^\d+\.\s*/,
+                        ''
+                    );
+        }
+    } else {
+        if (originInput) {
+            originInput.value = '';
+        }
+    }
+    item.setAttribute(
+        'data-current-stop',
+        selectedOption
+        ? selectedOption.value
+        : ''
+    );
+}
+/* =========================================================
+   將 DOM 設定同步到資料
+   ========================================================= */
+function syncCurrentDOMToBuses() {
+    var items =
+        document.querySelectorAll(
+            '.config-item'
+        );
+    var tempConfigs = [];
+    for (
+        var i = 0;
+        i < items.length;
+        i++
+    ) {
+        var item =
+            items[i];
+        var company =
+            item.querySelector(
+                '.bus-company'
+            ).value;
+        if (company === 'mtr') {
+            continue;
+        }
+        var route =
+            item.querySelector(
+                '.bus-route'
+            ).value
+            .trim();
+        var dir =
+            item.querySelector(
+                '.bus-dir'
+            ).value;
+        var stop =
+            item.querySelector(
+                '.bus-stop'
+            ).value;
+        var origin_name =
+            item.querySelector(
+                '.bus-origin'
+            ).value
+            .trim();
+        var dest_name =
+            item.querySelector(
+                '.bus-dest'
+            ).value
+            .trim();
+        var offset =
+            parseFloat(
+                item.querySelector(
+                    '.bus-offset'
+                ).value
+            );
+        var configObj = {
+            company: company,
+            route: route,
+            dir: dir,
+            stop: stop || '',
+            origin_name: origin_name,
+            dest_name: dest_name,
+            offset: offset
+        };
+        if (
+            company === 'nlb'
+        ) {
+            configObj.nlb_route_id =
+                dir;
+        }
+        tempConfigs.push(
+            configObj
+        );
+    }
+    return tempConfigs;
+}
+/* =========================================================
+   新增路線
+   ========================================================= */
+function addNewBusConfig() {
+    currentBuses =
+        syncCurrentDOMToBuses();
+    currentBuses.push({
+        company: 'kmb',
+        route: '',
+        dir: 'outbound',
+        stop: '',
+        origin_name: '',
+        dest_name: '',
+        offset: 0
+    });
+    renderSettingsList();
+}
+/* =========================================================
+   刪除路線
+   ========================================================= */
+function deleteBusConfig(index) {
+    currentBuses =
+        syncCurrentDOMToBuses();
+    currentBuses.splice(
+        index,
+        1
+    );
+    renderSettingsList();
+}
+/* =========================================================
+   保存設定
+   ========================================================= */
+function saveBusConfig() {
+    var startTime =
+        document.getElementById(
+            'night-start-time'
+        ).value;
+    var endTime =
+        document.getElementById(
+            'night-end-time'
+        ).value;
+    if (startTime) {
+        localStorage.setItem(
+            'night_mode_start',
+            startTime
+        );
+    }
+    if (endTime) {
+        localStorage.setItem(
+            'night_mode_end',
+            endTime
+        );
+    }
+    var items =
+        document.querySelectorAll(
+            '.config-item'
+        );
+    var newConfigs = [];
+    for (
+        var i = 0;
+        i < items.length;
+        i++
+    ) {
+        var item =
+            items[i];
+        var company =
+            item.querySelector(
+                '.bus-company'
+            ).value;
+        if (company === 'mtr') {
+            continue;
+        }
+        var route =
+            item.querySelector(
+                '.bus-route'
+            ).value
+            .trim();
+        var dir =
+            item.querySelector(
+                '.bus-dir'
+            ).value;
+        var stop =
+            item.querySelector(
+                '.bus-stop'
+            ).value;
+        var origin_name =
+            item.querySelector(
+                '.bus-origin'
+            ).value
+            .trim();
+        var dest_name =
+            item.querySelector(
+                '.bus-dest'
+            ).value
+            .trim();
+        var offset =
+            parseFloat(
+                item.querySelector(
+                    '.bus-offset'
+                ).value
+            );
+        if (route) {
+            var configObj = {
+                company: company,
+                route: route,
+                dir: dir,
+                stop: stop || '',
+                origin_name: origin_name,
+                dest_name: dest_name,
+                offset: offset
+            };
+            /*
+             * NLB 保存官方 routeId
+             */
+            if (
+                company === 'nlb'
+            ) {
+                configObj.nlb_route_id =
+                    dir;
+            }
+            newConfigs.push(
+                configObj
+            );
+        }
+    }
+    currentBuses =
+        newConfigs;
+    localStorage.setItem(
+        'user_bus_configs_v15',
+        JSON.stringify(
+            currentBuses
+        )
+    );
+    closeSettings();
+    checkNightMode(
+        new Date()
+    );
+    fetchBusData();
+}
+/* =========================================================
+   完成
+   ========================================================= */
 </script>
 </body>
 </html>
