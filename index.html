@@ -3171,6 +3171,102 @@ function applyStopSelection(
         }
     }
 }
+/* =========================================================
+   新增 / 刪除 / 保存 / 車站切換 函數 (補回缺失的功能)
+   ========================================================= */
+
+// 1. 車站選單改變時，自動更新「起點站名」輸入框
+function handleStopChange(index) {
+    var items = document.querySelectorAll('.config-item');
+    var item = items[index];
+    if (!item) return;
+
+    var stopSelect = item.querySelector('.bus-stop');
+    var originInput = item.querySelector('.bus-origin');
+    
+    item.setAttribute('data-current-stop', stopSelect.value);
+
+    var selectedOption = stopSelect.options[stopSelect.selectedIndex];
+    if (selectedOption && selectedOption.value) {
+        // 自動帶入站名（清理掉開頭的數字序號，如 "1. "）
+        originInput.value = selectedOption.text.replace(/^\d+\.\s*/, '');
+    }
+}
+
+// 2. 刪除路線按鈕
+function deleteBusConfig(index) {
+    currentBuses.splice(index, 1);
+    renderSettingsList();
+}
+
+// 3. + 新增路線按鈕
+function addNewBusConfig() {
+    currentBuses.push({
+        company: 'kmb',
+        route: '',
+        dir: 'outbound',
+        stop: '',
+        origin_name: '',
+        dest_name: '',
+        offset: 0
+    });
+    renderSettingsList();
+}
+
+// 4. 💾 保存並即時更新按鈕
+function saveBusConfig() {
+    // 保存夜間模式設定
+    var startEl = document.getElementById('night-start-time');
+    var endEl = document.getElementById('night-end-time');
+    if (startEl) localStorage.setItem('night_mode_start', startEl.value);
+    if (endEl) localStorage.setItem('night_mode_end', endEl.value);
+
+    // 收集所有路線表單數據
+    var items = document.querySelectorAll('.config-item');
+    var newConfigs = [];
+
+    items.forEach(function(item) {
+        var company = item.querySelector('.bus-company').value;
+        var route = item.querySelector('.bus-route').value.trim().toUpperCase();
+        var dir = item.querySelector('.bus-dir').value;
+        var stop = item.querySelector('.bus-stop').value;
+        var origin_name = item.querySelector('.bus-origin').value.trim();
+        var dest_name = item.querySelector('.bus-dest').value.trim();
+        var offset = parseFloat(item.querySelector('.bus-offset').value || 0);
+
+        if (route && stop) {
+            var config = {
+                company: company,
+                route: route,
+                dir: dir,
+                stop: stop,
+                origin_name: origin_name,
+                dest_name: dest_name,
+                offset: offset
+            };
+
+            // 新大嶼山巴士 (NLB) 特殊處理 route_id
+            if (company === 'nlb') {
+                config.nlb_route_id = dir;
+            }
+
+            newConfigs.push(config);
+        }
+    });
+
+    if (newConfigs.length === 0 && items.length > 0) {
+        alert('請至少填寫一條完整的路線及選擇車站！');
+        return;
+    }
+
+    // 寫入 localStorage 並即時更新主介面
+    localStorage.setItem('user_bus_configs_v15', JSON.stringify(newConfigs));
+    currentBuses = newConfigs;
+    
+    closeSettings();
+    fetchBusData();
+}
+
 </script>
 </body>
 </html>
