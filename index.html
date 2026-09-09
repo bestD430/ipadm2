@@ -1474,9 +1474,6 @@ function loadBusConfigs() {
     var saved =
         localStorage.getItem('user_bus_configs_v15');
     if (!saved) {
-        /*
-         * 舊版本 v14 自動遷移
-         */
         saved =
             localStorage.getItem('user_bus_configs_v14');
     }
@@ -1486,17 +1483,10 @@ function loadBusConfigs() {
                 JSON.parse(saved);
             currentBuses = [];
             for (var i = 0; i < parsed.length; i++) {
-                /*
-                 * mtr 舊資料不再使用。
-                 * NLB 保留。
-                 */
                 if (parsed[i].company !== 'mtr') {
                     currentBuses.push(parsed[i]);
                 }
             }
-            /*
-             * 自動補回 NLB routeId
-             */
             for (var j = 0; j < currentBuses.length; j++) {
                 if (
                     currentBuses[j].company === 'nlb' &&
@@ -1736,12 +1726,6 @@ function getNLBETA(
                     ) {
                         continue;
                     }
-                    /*
-                     * NLB 回傳：
-                     * YYYY-MM-DD HH:mm:ss
-                     *
-                     * 香港時區 +08:00
-                     */
                     var etaString =
                         String(
                             item.estimatedArrivalTime
@@ -1834,9 +1818,6 @@ function buildEtaObjects(
             });
         }
     }
-    /*
-     * 去除重複 ETA
-     */
     var uniqueEtas = [];
     var seen = {};
     for (var x = 0; x < etas.length; x++) {
@@ -2056,9 +2037,6 @@ function fetchBusData() {
                 '</div>';
             checkDone();
         }
-        /*
-         * KMB / LWB
-         */
         if (
             bus.company === 'kmb' ||
             bus.company === 'lwb'
@@ -2069,9 +2047,6 @@ function fetchBusData() {
                 busDir,
                 processEtas
             );
-        /*
-         * CTB
-         */
         } else if (
             bus.company === 'ctb'
         ) {
@@ -2081,9 +2056,6 @@ function fetchBusData() {
                 busDir,
                 processEtas
             );
-        /*
-         * NLB
-         */
         } else if (
             bus.company === 'nlb'
         ) {
@@ -2463,9 +2435,6 @@ function onDirectionChanged(index) {
         destInput.value =
             selectedOpt.text;
     }
-    /*
-     * 換方向後清除舊車站
-     */
     item.setAttribute(
         'data-current-stop',
         ''
@@ -2534,11 +2503,6 @@ function updateDirectionOptions(
         '">' +
         '方向載入中...' +
         '</option>';
-    /*
-     * =====================================================
-     * KMB / LWB
-     * =====================================================
-     */
     if (
         company === 'kmb' ||
         company === 'lwb'
@@ -2619,11 +2583,6 @@ function updateDirectionOptions(
                     callback
                 );
             });
-    /*
-     * =====================================================
-     * CTB
-     * =====================================================
-     */
     } else if (
         company === 'ctb'
     ) {
@@ -2684,23 +2643,6 @@ function updateDirectionOptions(
                     callback
                 );
             });
-    /*
-     * =====================================================
-     * NLB
-     * =====================================================
-     *
-     * NLB 特別處理：
-     *
-     * 同一個 routeNo，例如：
-     *
-     * 1
-     * 1
-     *
-     * 其實可能代表不同方向。
-     *
-     * 所以 Select 的 value 使用官方 routeId。
-     * =====================================================
-     */
     } else if (
         company === 'nlb'
     ) {
@@ -2741,10 +2683,6 @@ function updateDirectionOptions(
                     matched[j];
                 var routeId =
                     r.routeId;
-                /*
-                 * API 不同版本可能使用
-                 * routeName_c / routeName_tc
-                 */
                 var routeName =
                     r.routeName_c ||
                     r.routeName_tc ||
@@ -2754,15 +2692,11 @@ function updateDirectionOptions(
                     '<option value="' +
                     escapeHtml(routeId) +
                     '">' +
-                    '往 ' +
                     escapeHtml(routeName) +
                     '</option>';
             }
             dirSelect.innerHTML =
                 html;
-            /*
-             * 優先還原之前保存的 routeId
-             */
             if (
                 !isUserAction &&
                 currentDir
@@ -2812,11 +2746,6 @@ function updateDirectionOptions(
                 callback();
             }
         });
-    /*
-     * =====================================================
-     * 其他
-     * =====================================================
-     */
     } else {
         dirSelect.innerHTML =
             '<option value="outbound">往 去程</option>' +
@@ -2890,10 +2819,6 @@ function loadStopOptions(
     if (!item) {
         return;
     }
-    /*
-     * 這裡不再重複呼叫 updateDirectionOptions，
-     * 避免 NLB API 被連續呼叫兩次。
-     */
     var company =
         item.querySelector(
             '.bus-company'
@@ -2941,11 +2866,6 @@ function loadStopOptions(
         '</option>';
     var optionsHtml =
         '<option value="">請選擇車站...</option>';
-    /*
-     * =====================================================
-     * KMB / LWB
-     * =====================================================
-     */
     if (
         company === 'kmb' ||
         company === 'lwb'
@@ -3027,11 +2947,6 @@ function loadStopOptions(
                 stopSelect.innerHTML =
                     '<option value="">載入失敗</option>';
             });
-    /*
-     * =====================================================
-     * CTB
-     * =====================================================
-     */
     } else if (
         company === 'ctb'
     ) {
@@ -3150,17 +3065,9 @@ function loadStopOptions(
                 stopSelect.innerHTML =
                     '<option value="">載入失敗</option>';
             });
-    /*
-     * =====================================================
-     * NLB
-     * =====================================================
-     */
     } else if (
         company === 'nlb'
     ) {
-        /*
-         * NLB dir 就是 routeId
-         */
         var nlbRouteId =
             dir;
         if (!nlbRouteId) {
@@ -3186,11 +3093,6 @@ function loadStopOptions(
                 ) {
                     var s =
                         stops[i];
-                    /*
-                     * API 欄位：
-                     * stopId
-                     * stopName_c
-                     */
                     var stopId =
                         s.stopId;
                     var stopName =
@@ -3239,10 +3141,6 @@ function applyStopSelection(
     ) {
         stopSelect.value =
             initialStop;
-        /*
-         * 如果保存的 stopId 已不存在，
-         * 不強行選第一站。
-         */
         if (
             stopSelect.value !==
             initialStop
@@ -3260,288 +3158,10 @@ function applyStopSelection(
             originInput
         ) {
             originInput.value =
-                selectedOption.text
-                    .replace(
-                        /^\d+\.\s*/,
-                        ''
-                    );
+                selectedOption.text;
         }
-    } else if (
-        isUserAction
-    ) {
-        if (originInput) {
-            originInput.value = '';
-        }
-        item.setAttribute(
-            'data-current-stop',
-            ''
-        );
     }
 }
-/* =========================================================
-   車站改變
-   ========================================================= */
-function handleStopChange(index) {
-    var items =
-        document.querySelectorAll(
-            '.config-item'
-        );
-    var item =
-        items[index];
-    if (!item) {
-        return;
-    }
-    var stopSelect =
-        item.querySelector(
-            '.bus-stop'
-        );
-    var originInput =
-        item.querySelector(
-            '.bus-origin'
-        );
-    var selectedOption =
-        stopSelect.options[
-            stopSelect.selectedIndex
-        ];
-    if (
-        selectedOption &&
-        selectedOption.value
-    ) {
-        if (originInput) {
-            originInput.value =
-                selectedOption.text
-                    .replace(
-                        /^\d+\.\s*/,
-                        ''
-                    );
-        }
-    } else {
-        if (originInput) {
-            originInput.value = '';
-        }
-    }
-    item.setAttribute(
-        'data-current-stop',
-        selectedOption
-        ? selectedOption.value
-        : ''
-    );
-}
-/* =========================================================
-   將 DOM 設定同步到資料
-   ========================================================= */
-function syncCurrentDOMToBuses() {
-    var items =
-        document.querySelectorAll(
-            '.config-item'
-        );
-    var tempConfigs = [];
-    for (
-        var i = 0;
-        i < items.length;
-        i++
-    ) {
-        var item =
-            items[i];
-        var company =
-            item.querySelector(
-                '.bus-company'
-            ).value;
-        if (company === 'mtr') {
-            continue;
-        }
-        var route =
-            item.querySelector(
-                '.bus-route'
-            ).value
-            .trim();
-        var dir =
-            item.querySelector(
-                '.bus-dir'
-            ).value;
-        var stop =
-            item.querySelector(
-                '.bus-stop'
-            ).value;
-        var origin_name =
-            item.querySelector(
-                '.bus-origin'
-            ).value
-            .trim();
-        var dest_name =
-            item.querySelector(
-                '.bus-dest'
-            ).value
-            .trim();
-        var offset =
-            parseFloat(
-                item.querySelector(
-                    '.bus-offset'
-                ).value
-            );
-        var configObj = {
-            company: company,
-            route: route,
-            dir: dir,
-            stop: stop || '',
-            origin_name: origin_name,
-            dest_name: dest_name,
-            offset: offset
-        };
-        if (
-            company === 'nlb'
-        ) {
-            configObj.nlb_route_id =
-                dir;
-        }
-        tempConfigs.push(
-            configObj
-        );
-    }
-    return tempConfigs;
-}
-/* =========================================================
-   新增路線
-   ========================================================= */
-function addNewBusConfig() {
-    currentBuses =
-        syncCurrentDOMToBuses();
-    currentBuses.push({
-        company: 'kmb',
-        route: '',
-        dir: 'outbound',
-        stop: '',
-        origin_name: '',
-        dest_name: '',
-        offset: 0
-    });
-    renderSettingsList();
-}
-/* =========================================================
-   刪除路線
-   ========================================================= */
-function deleteBusConfig(index) {
-    currentBuses =
-        syncCurrentDOMToBuses();
-    currentBuses.splice(
-        index,
-        1
-    );
-    renderSettingsList();
-}
-/* =========================================================
-   保存設定
-   ========================================================= */
-function saveBusConfig() {
-    var startTime =
-        document.getElementById(
-            'night-start-time'
-        ).value;
-    var endTime =
-        document.getElementById(
-            'night-end-time'
-        ).value;
-    if (startTime) {
-        localStorage.setItem(
-            'night_mode_start',
-            startTime
-        );
-    }
-    if (endTime) {
-        localStorage.setItem(
-            'night_mode_end',
-            endTime
-        );
-    }
-    var items =
-        document.querySelectorAll(
-            '.config-item'
-        );
-    var newConfigs = [];
-    for (
-        var i = 0;
-        i < items.length;
-        i++
-    ) {
-        var item =
-            items[i];
-        var company =
-            item.querySelector(
-                '.bus-company'
-            ).value;
-        if (company === 'mtr') {
-            continue;
-        }
-        var route =
-            item.querySelector(
-                '.bus-route'
-            ).value
-            .trim();
-        var dir =
-            item.querySelector(
-                '.bus-dir'
-            ).value;
-        var stop =
-            item.querySelector(
-                '.bus-stop'
-            ).value;
-        var origin_name =
-            item.querySelector(
-                '.bus-origin'
-            ).value
-            .trim();
-        var dest_name =
-            item.querySelector(
-                '.bus-dest'
-            ).value
-            .trim();
-        var offset =
-            parseFloat(
-                item.querySelector(
-                    '.bus-offset'
-                ).value
-            );
-        if (route) {
-            var configObj = {
-                company: company,
-                route: route,
-                dir: dir,
-                stop: stop || '',
-                origin_name: origin_name,
-                dest_name: dest_name,
-                offset: offset
-            };
-            /*
-             * NLB 保存官方 routeId
-             */
-            if (
-                company === 'nlb'
-            ) {
-                configObj.nlb_route_id =
-                    dir;
-            }
-            newConfigs.push(
-                configObj
-            );
-        }
-    }
-    currentBuses =
-        newConfigs;
-    localStorage.setItem(
-        'user_bus_configs_v15',
-        JSON.stringify(
-            currentBuses
-        )
-    );
-    closeSettings();
-    checkNightMode(
-        new Date()
-    );
-    fetchBusData();
-}
-/* =========================================================
-   完成
-   ========================================================= */
 </script>
 </body>
 </html>
