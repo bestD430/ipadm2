@@ -258,7 +258,6 @@
         color: #000000;
         border: 1px solid rgba(0, 0, 0, 0.1);
     }
-    /* 新大嶼山巴士 */
     .card-nlb {
         background-color: #00843d;
         color: #ffffff;
@@ -1976,10 +1975,17 @@ function fetchBusData() {
                     escapeHtml(bus.origin_name) +
                   '</span>'
                 : '';
+            
+            // NLB 到站牌單獨去除目的地名稱開頭的「往」字，不干涉隱藏選單
+            var destDisplay = bus.dest_name || '';
+            if (bus.company === 'nlb') {
+                destDisplay = destDisplay.replace(/^往\s*/, '');
+            }
+
             var destText =
-                bus.dest_name
+                destDisplay
                 ? '<span class="bus-dest-text">' +
-                    escapeHtml(bus.dest_name) +
+                    escapeHtml(destDisplay) +
                   '</span>'
                 : '';
             var displayRoute =
@@ -2503,6 +2509,7 @@ function updateDirectionOptions(
         '">' +
         '方向載入中...' +
         '</option>';
+
     if (
         company === 'kmb' ||
         company === 'lwb'
@@ -2692,6 +2699,7 @@ function updateDirectionOptions(
                     '<option value="' +
                     escapeHtml(routeId) +
                     '">' +
+                    '往 ' +
                     escapeHtml(routeName) +
                     '</option>';
             }
@@ -2866,6 +2874,7 @@ function loadStopOptions(
         '</option>';
     var optionsHtml =
         '<option value="">請選擇車站...</option>';
+
     if (
         company === 'kmb' ||
         company === 'lwb'
@@ -3155,14 +3164,13 @@ function applyStopSelection(
         if (
             selectedOption &&
             selectedOption.value &&
-            originInput
+            originInput &&
+            !originInput.value
         ) {
-            originInput.value =
-                selectedOption.text;
+            originInput.value = selectedOption.text.replace(/^\d+\.\s*/, '');
         }
     }
 }
 </script>
 </body>
 </html>
-
