@@ -2,7 +2,9 @@
 <html lang="zh-HK">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>交通及天氣看板</title>
 
 <style>
@@ -533,17 +535,22 @@ main {
 }
 
 #night-screen {
-    position:fixed;
-    inset:0;
-    background:#000;
-    z-index:9999;
-    display:none;
-    flex-direction:column;
-    justify-content:center;
-    align-items:center;
-    cursor:pointer;
-    padding:24px;
-    gap:16px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100vw;
+    height: 100vh;
+    background: #000;
+    z-index: 9999;
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    padding: 24px;
+    gap: 16px;
 }
 
 #night-screen.active {
@@ -595,13 +602,18 @@ main {
 }
 
 .modal-overlay {
-    position:fixed;
-    inset:0;
-    background:rgba(0,0,0,.75);
-    display:none;
-    justify-content:center;
-    align-items:center;
-    z-index:10000;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,.75);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
 }
 
 .modal-overlay.active {
@@ -1157,7 +1169,6 @@ var currentBuses = [];
 var cachedRawEtas = {};
 var nlbRouteCache = null;
 
-
 /* =========================================================
    預設路線
 ========================================================= */
@@ -1183,7 +1194,6 @@ var defaultBuses = [
     }
 ];
 
-
 /* =========================================================
    HTML 安全處理
 ========================================================= */
@@ -1196,7 +1206,6 @@ function escapeHtml(value) {
         .replace(/"/g, '&quot;')
         .replace(/'/g, '&#039;');
 }
-
 
 /* =========================================================
    KMB 車站名稱
@@ -1238,7 +1247,6 @@ function getKmbStopsMap(callback) {
         callback({});
     });
 }
-
 
 /* =========================================================
    時鐘
@@ -1338,7 +1346,6 @@ function updateClock() {
     checkNightMode(now);
 }
 
-
 /* =========================================================
    夜間模式
 ========================================================= */
@@ -1412,7 +1419,6 @@ function checkNightMode(now) {
     }
 }
 
-
 function wakeUpNightScreen() {
 
     var nightScreen =
@@ -1438,10 +1444,8 @@ function wakeUpNightScreen() {
         }, 30000);
 }
 
-
 setInterval(updateClock, 1000);
 updateClock();
-
 
 /* =========================================================
    天氣
@@ -1494,7 +1498,6 @@ function fetchWeatherData() {
     var isNightNow =
         currentHour >= 18 ||
         currentHour < 6;
-
 
     fetch(
         'https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=rhrread&lang=tc'
@@ -1636,7 +1639,6 @@ function fetchWeatherData() {
     })
     .catch(function() {});
 
-
     fetch(
         'https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=flw&lang=tc'
     )
@@ -1674,7 +1676,6 @@ function fetchWeatherData() {
         }
     })
     .catch(function() {});
-
 
     fetch(
         'https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=warnsum&lang=tc'
@@ -1829,7 +1830,6 @@ function fetchWeatherData() {
     });
 }
 
-
 /* =========================================================
    政府新聞
 ========================================================= */
@@ -1952,7 +1952,6 @@ function fetchGovPressRelease() {
     });
 }
 
-
 /* =========================================================
    載入設定
 ========================================================= */
@@ -1991,11 +1990,6 @@ function loadBusConfigs() {
                     parsed[i].company !== 'mtr'
                 ) {
 
-                    /*
-                     * 重要：
-                     * 每一條路線都建立獨立物件，
-                     * 避免後續修改時互相影響。
-                     */
                     currentBuses.push({
                         company:
                             parsed[i].company || 'kmb',
@@ -2059,7 +2053,6 @@ function loadBusConfigs() {
     }
 }
 
-
 /* =========================================================
    KMB ETA
 ========================================================= */
@@ -2120,7 +2113,6 @@ function getKMBSeta(
         callback([]);
     });
 }
-
 
 /* =========================================================
    CTB ETA
@@ -2225,7 +2217,6 @@ function getCTBETA(
     }
 }
 
-
 /* =========================================================
    NLB 路線
 ========================================================= */
@@ -2256,7 +2247,6 @@ function getNLBRouteList(callback) {
         callback([]);
     });
 }
-
 
 /* =========================================================
    NLB 車站
@@ -2291,7 +2281,6 @@ function getNLBStops(
         callback([]);
     });
 }
-
 
 /* =========================================================
    NLB ETA
@@ -2382,7 +2371,6 @@ function getNLBETA(
         callback([]);
     });
 }
-
 
 /* =========================================================
    ETA 處理
@@ -2524,19 +2512,12 @@ function buildEtaObjects(
     return etas.slice(0,3);
 }
 
-
 /* =========================================================
    巴士資料
 ========================================================= */
 
 function fetchBusData() {
 
-    /*
-     * 只有第一次載入時才從 localStorage 讀取。
-     *
-     * 原本每 30 秒都 loadBusConfigs()，
-     * 會令正在操作設定時容易重新覆蓋 currentBuses。
-     */
     if (!currentBuses || currentBuses.length === 0) {
         loadBusConfigs();
     }
@@ -2834,7 +2815,6 @@ function fetchBusData() {
                 checkDone();
             }
 
-
             if (
                 bus.company === 'kmb' ||
                 bus.company === 'lwb'
@@ -2888,7 +2868,6 @@ function fetchBusData() {
     }
 }
 
-
 /* =========================================================
    啟動
 ========================================================= */
@@ -2914,16 +2893,12 @@ setInterval(
     30000
 );
 
-
 /* =========================================================
    設定視窗
 ========================================================= */
 
 function openSettings() {
 
-    /*
-     * 每次打開設定時才重新從 localStorage 讀取。
-     */
     loadBusConfigs();
 
     var startEl =
@@ -2966,7 +2941,6 @@ function openSettings() {
     }
 }
 
-
 function closeSettings() {
 
     var modal =
@@ -2978,7 +2952,6 @@ function closeSettings() {
         modal.classList.remove('active');
     }
 }
-
 
 /* =========================================================
    路線設定列表
@@ -3047,7 +3020,6 @@ function renderSettingsList() {
 
         return options;
     }
-
 
     for (
         var i = 0;
@@ -3222,9 +3194,6 @@ function renderSettingsList() {
             false
         );
 
-        /*
-         * 方向資料非同步載入。
-         */
         updateDirectionOptions(
             i,
             false,
@@ -3232,7 +3201,6 @@ function renderSettingsList() {
         );
     }
 }
-
 
 /* =========================================================
    路線輸入
@@ -3264,7 +3232,6 @@ function renderRouteControl(
         ')">'
     );
 }
-
 
 /* =========================================================
    重要：同步設定資料
@@ -3332,7 +3299,6 @@ function syncConfigItemToBus(index) {
             '.bus-offset'
         );
 
-
     if (companyEl) {
 
         currentBuses[index].company =
@@ -3356,10 +3322,6 @@ function syncConfigItemToBus(index) {
 
     if (stopEl) {
 
-        /*
-         * 不要在「車站載入中」時覆蓋
-         * 原本已經存在的 stop。
-         */
         if (stopEl.value) {
 
             currentBuses[index].stop =
@@ -3397,16 +3359,12 @@ function syncConfigItemToBus(index) {
     }
 }
 
-
 /* =========================================================
    公司改變
 ========================================================= */
 
 function onCompanyChanged(index) {
 
-    /*
-     * 先保存舊資料。
-     */
     syncConfigItemToBus(index);
 
     var items =
@@ -3431,10 +3389,6 @@ function onCompanyChanged(index) {
             '.config-route-container'
         );
 
-    /*
-     * 公司真正改變，因此只清除
-     * 這一條路線自己的資料。
-     */
     currentBuses[index].company =
         company;
 
@@ -3464,31 +3418,19 @@ function onCompanyChanged(index) {
     onBusMetaChanged(index);
 }
 
-
 /* =========================================================
    路線改變
 ========================================================= */
 
 function onBusMetaChanged(index) {
 
-    /*
-     * 先把目前路線輸入同步到
-     * currentBuses。
-     */
     syncConfigItemToBus(index);
 
-    /*
-     * 只有這一條路線重新載入方向。
-     */
     updateDirectionOptions(
         index,
         true,
         function() {
 
-            /*
-             * 方向載入完成後再次同步，
-             * 防止非同步過程遺失資料。
-             */
             syncConfigItemToBus(index);
 
             loadStopOptions(
@@ -3498,7 +3440,6 @@ function onBusMetaChanged(index) {
         }
     );
 }
-
 
 /* =========================================================
    方向改變
@@ -3531,9 +3472,6 @@ function onDirectionChanged(index) {
     var newDir =
         dirSelect.value;
 
-    /*
-     * 只更新目前這一條路線。
-     */
     currentBuses[index].dir =
         newDir;
 
@@ -3582,7 +3520,6 @@ function onDirectionChanged(index) {
         false
     );
 }
-
 
 /* =========================================================
    方向選項
@@ -3664,10 +3601,6 @@ function updateDirectionOptions(
         '方向載入中...' +
         '</option>';
 
-
-    /*
-     * KMB / LWB
-     */
     if (
         company === 'kmb' ||
         company === 'lwb'
@@ -3762,10 +3695,6 @@ function updateDirectionOptions(
             );
         });
 
-
-    /*
-     * CTB
-     */
     } else if (
         company === 'ctb'
     ) {
@@ -3840,10 +3769,6 @@ function updateDirectionOptions(
             );
         });
 
-
-    /*
-     * NLB
-     */
     } else if (
         company === 'nlb'
     ) {
@@ -3935,7 +3860,6 @@ function updateDirectionOptions(
     }
 }
 
-
 /* =========================================================
    完成方向設定
 ========================================================= */
@@ -3980,9 +3904,6 @@ function finalizeDir(
         dirSelect.value
     );
 
-    /*
-     * 立即同步 direction。
-     */
     var index =
         parseInt(
             item.getAttribute('data-index'),
@@ -4024,7 +3945,6 @@ function finalizeDir(
         callback();
     }
 }
-
 
 /* =========================================================
    車站
@@ -4072,9 +3992,6 @@ function loadStopOptions(
             '.bus-stop'
         );
 
-    /*
-     * 優先使用 currentBuses。
-     */
     var currentStop =
         resetStop
         ? ''
@@ -4104,10 +4021,6 @@ function loadStopOptions(
         '車站載入中...' +
         '</option>';
 
-
-    /*
-     * KMB / LWB
-     */
     if (
         company === 'kmb' ||
         company === 'lwb'
@@ -4178,10 +4091,6 @@ function loadStopOptions(
                     stopSelect.innerHTML =
                         html;
 
-                    /*
-                     * 如果原本有車站，
-                     * 確保 currentBuses 保留。
-                     */
                     if (
                         currentStop &&
                         currentBuses[index]
@@ -4193,9 +4102,6 @@ function loadStopOptions(
                 })
                 .catch(function() {
 
-                    /*
-                     * API 失敗時不要清掉原本的車站。
-                     */
                     if (
                         currentStop
                     ) {
@@ -4223,10 +4129,6 @@ function loadStopOptions(
             }
         );
 
-
-    /*
-     * CTB
-     */
     } else if (
         company === 'ctb'
     ) {
@@ -4331,95 +4233,37 @@ function loadStopOptions(
 
                         stopNames[idx] =
                             sObj.stop;
-
                         completedStops++;
-
-                        if (
-                            completedStops ===
-                            list.length
-                        ) {
-
-                            var html =
-                                '<option value="">' +
-                                '請選擇車站...' +
-                                '</option>';
-
-                            for (
-                                var k = 0;
-                                k < list.length;
-                                k++
-                            ) {
-
-                                var code =
-                                    list[k].stop;
-
-                                var name =
-                                    stopNames[k];
-
-                                var selected =
-                                    code ===
-                                    currentStop
-                                    ? 'selected'
-                                    : '';
-
-                                html +=
-                                    '<option value="' +
-                                    escapeHtml(code) +
-                                    '" ' +
-                                    selected +
-                                    '>' +
-                                    (k + 1) +
-                                    '. ' +
-                                    escapeHtml(name) +
-                                    '</option>';
-                            }
-
-                            stopSelect.innerHTML =
-                                html;
-                        }
                     });
                 }
             );
         })
         .catch(function() {
-
-            if (currentStop) {
-
-                stopSelect.innerHTML =
-                    '<option value="' +
-                    escapeHtml(
-                        currentStop
-                    ) +
-                    '" selected>' +
-                    '已選代碼: ' +
-                    escapeHtml(
-                        currentStop
-                    ) +
-                    '</option>';
-
-            } else {
-
-                stopSelect.innerHTML =
-                    '<option value="">' +
-                    '載入車站失敗' +
-                    '</option>';
-            }
+            stopSelect.innerHTML =
+                '<option value="">' +
+                '載入車站失敗' +
+                '</option>';
         });
 
-
-    /*
-     * NLB
-     */
     } else if (
         company === 'nlb'
     ) {
 
-        /*
-         * NLB 的 dir 就是官方 routeId。
-         */
         getNLBStops(
             dir,
             function(stops) {
+
+                if (
+                    stops.length === 0
+                ) {
+
+                    stopSelect.innerHTML =
+                        '<option value="">' +
+                        '無車站資料' +
+                        '</option>';
+
+                    return;
+                }
 
                 var html =
                     '<option value="">' +
@@ -4427,18 +4271,21 @@ function loadStopOptions(
                     '</option>';
 
                 for (
-                    var i = 0;
-                    i < stops.length;
-                    i++
+                    var m = 0;
+                    m < stops.length;
+                    m++
                 ) {
 
+                    var st =
+                        stops[m];
+
                     var code =
-                        stops[i].stopId;
+                        st.stopId;
 
                     var name =
-                        stops[i].stopName_c ||
-                        stops[i].stopName_tc ||
-                        stops[i].stopName_e ||
+                        st.stopName_c ||
+                        st.stopName_tc ||
+                        st.stopName_e ||
                         code;
 
                     var selected =
@@ -4453,7 +4300,7 @@ function loadStopOptions(
                         '" ' +
                         selected +
                         '>' +
-                        (i + 1) +
+                        (m + 1) +
                         '. ' +
                         escapeHtml(name) +
                         '</option>';
@@ -4466,334 +4313,96 @@ function loadStopOptions(
     }
 }
 
-
-/* =========================================================
-   車站改變
-========================================================= */
-
 function handleStopChange(index) {
-
-    var items =
-        document.querySelectorAll(
-            '.config-item'
-        );
-
-    var item =
-        items[index];
-
-    if (!item) {
-        return;
-    }
-
-    var stopSelect =
-        item.querySelector(
-            '.bus-stop'
-        );
-
-    var selectedOpt =
-        stopSelect.options[
-            stopSelect.selectedIndex
-        ];
-
-    var originInput =
-        item.querySelector(
-            '.bus-origin'
-        );
-
-    var stopValue =
-        stopSelect.value;
-
-    /*
-     * 立即更新 currentBuses。
-     */
-    if (!currentBuses[index]) {
-        currentBuses[index] = {};
-    }
-
-    currentBuses[index].stop =
-        stopValue;
-
-    item.setAttribute(
-        'data-current-stop',
-        stopValue
-    );
-
-    if (
-        selectedOpt &&
-        selectedOpt.value
-    ) {
-
-        var cleanName =
-            selectedOpt.text.replace(
-                /^\d+\.\s*/,
-                ''
-            );
-
-        originInput.value =
-            cleanName;
-
-        currentBuses[index].origin_name =
-            cleanName;
-    }
+    syncConfigItemToBus(index);
 }
-
-
-/* =========================================================
-   新增路線
-========================================================= */
 
 function addNewBusConfig() {
 
-    /*
-     * 直接加入 currentBuses。
-     * 不會影響原有路線。
-     */
     currentBuses.push({
-        company:'kmb',
-        route:'',
-        dir:'outbound',
-        stop:'',
-        origin_name:'',
-        dest_name:'',
-        offset:0,
-        nlb_route_id:''
+        company: 'kmb',
+        route: '',
+        dir: 'outbound',
+        stop: '',
+        origin_name: '',
+        dest_name: '',
+        offset: 0
     });
 
     renderSettingsList();
 }
 
-
-/* =========================================================
-   刪除路線
-========================================================= */
-
 function deleteBusConfig(index) {
 
-    if (
-        index < 0 ||
-        index >= currentBuses.length
-    ) {
-        return;
-    }
-
-    /*
-     * 只刪除指定 index。
-     */
-    currentBuses.splice(
-        index,
-        1
-    );
+    currentBuses.splice(index, 1);
 
     renderSettingsList();
 }
 
-
-/* =========================================================
-   ★★★ 最重要：保存設定 ★★★
-========================================================= */
-
 function saveBusConfig() {
 
-    /*
-     * =====================================================
-     * 第一步：
-     * 先把目前設定畫面所有資料同步回 currentBuses。
-     *
-     * 這是修正「第二次保存會清除第一次路線」的核心。
-     * =====================================================
-     */
-
     var items =
-        document.querySelectorAll(
-            '.config-item'
-        );
+        document.querySelectorAll('.config-item');
 
-    for (
-        var i = 0;
-        i < items.length;
-        i++
-    ) {
+    currentBuses = [];
 
-        syncConfigItemToBus(i);
-    }
+    for (var i = 0; i < items.length; i++) {
 
+        var item = items[i];
 
-    /*
-     * =====================================================
-     * 第二步：
-     * 只保留完整路線。
-     *
-     * 空白新增列不會被保存。
-     * =====================================================
-     */
-
-    var newConfigs = [];
-
-    for (
-        var j = 0;
-        j < currentBuses.length;
-        j++
-    ) {
-
-        var bus =
-            currentBuses[j];
-
-        if (!bus) {
-            continue;
-        }
+        var company =
+            item.querySelector('.bus-company').value;
 
         var route =
-            String(
-                bus.route || ''
-            )
-            .trim()
-            .toUpperCase();
+            item.querySelector('.bus-route').value.trim().toUpperCase();
+
+        var dir =
+            item.querySelector('.bus-dir').value;
 
         var stop =
-            String(
-                bus.stop || ''
-            ).trim();
+            item.querySelector('.bus-stop').value;
 
-        /*
-         * 必須同時有路線及車站。
-         */
-        if (
-            !route ||
-            !stop
-        ) {
-            continue;
+        var origin_name =
+            item.querySelector('.bus-origin').value.trim();
+
+        var dest_name =
+            item.querySelector('.bus-dest').value.trim();
+
+        var offset =
+            parseFloat(item.querySelector('.bus-offset').value || 0);
+
+        if (route) {
+
+            var busObj = {
+                company: company,
+                route: route,
+                dir: dir,
+                stop: stop,
+                origin_name: origin_name,
+                dest_name: dest_name,
+                offset: offset
+            };
+
+            if (company === 'nlb') {
+                busObj.nlb_route_id = dir;
+            }
+
+            currentBuses.push(busObj);
         }
-
-        var busObj = {
-
-            company:
-                bus.company || 'kmb',
-
-            route:
-                route,
-
-            dir:
-                bus.dir || 'outbound',
-
-            stop:
-                stop,
-
-            origin_name:
-                bus.origin_name || '',
-
-            dest_name:
-                bus.dest_name || '',
-
-            offset:
-                parseFloat(
-                    bus.offset || 0
-                )
-        };
-
-        /*
-         * NLB 特別保存 routeId。
-         */
-        if (
-            bus.company === 'nlb'
-        ) {
-
-            busObj.nlb_route_id =
-                bus.nlb_route_id ||
-                bus.dir;
-        }
-
-        newConfigs.push(
-            busObj
-        );
     }
 
+    var startVal =
+        document.getElementById('night-start-time').value;
 
-    /*
-     * =====================================================
-     * 第三步：
-     * 更新 currentBuses。
-     * =====================================================
-     */
+    var endVal =
+        document.getElementById('night-end-time').value;
 
-    currentBuses =
-        newConfigs.slice();
+    localStorage.setItem('night_mode_start', startVal);
+    localStorage.setItem('night_mode_end', endVal);
 
-
-    /*
-     * =====================================================
-     * 第四步：
-     * 保存夜間設定。
-     * =====================================================
-     */
-
-    var startEl =
-        document.getElementById(
-            'night-start-time'
-        );
-
-    var endEl =
-        document.getElementById(
-            'night-end-time'
-        );
-
-    var startTime =
-        startEl
-        ? startEl.value
-        : '20:00';
-
-    var endTime =
-        endEl
-        ? endEl.value
-        : '05:00';
-
-    localStorage.setItem(
-        'night_mode_start',
-        startTime
-    );
-
-    localStorage.setItem(
-        'night_mode_end',
-        endTime
-    );
-
-
-    /*
-     * =====================================================
-     * 第五步：
-     * 一次性保存「全部」路線。
-     *
-     * 例如：
-     *
-     * 第一次：
-     * [ E36A ]
-     *
-     * 第二次：
-     * [ E36A, E21B ]
-     *
-     * 第三次：
-     * [ E36A, E21B, 3M ]
-     *
-     * 不會只保存最後一條。
-     * =====================================================
-     */
-
-    localStorage.setItem(
-        'user_bus_configs_v15',
-        JSON.stringify(
-            currentBuses
-        )
-    );
-
-
-    /*
-     * =====================================================
-     * 第六步：
-     * 關閉設定並立即更新。
-     * =====================================================
-     */
+    localStorage.setItem('user_bus_configs_v15', JSON.stringify(currentBuses));
 
     closeSettings();
-
     fetchBusData();
 }
 </script>
