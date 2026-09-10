@@ -59,7 +59,7 @@ header {
 
 #clock,
 .night-clock {
-    font-size: 48px;
+    font-size: 72px; /* 字體加大 50% (原 48px -> 72px) */
     font-weight: 700;
     letter-spacing: 2px;
     color: #ffffff;
@@ -73,12 +73,12 @@ header {
     flex-direction: column !important;
     align-items: flex-start !important;
     justify-content: center !important;
-    margin-left: 6px;
+    margin-left: 8px;
     line-height: 1.1;
 }
 
 .clock-ampm {
-    font-size: 21px;
+    font-size: 31px; /* 隨主時鐘比例放大 50% (原 21px -> 31px) */
     font-weight: 600;
     line-height: 1.1;
     display: block;
@@ -86,7 +86,7 @@ header {
 }
 
 .clock-seconds {
-    font-size: 21px;
+    font-size: 31px; /* 隨主時鐘比例放大 50% (原 21px -> 31px) */
     font-weight: 600;
     line-height: 1.1;
     opacity: 0.85;
@@ -263,7 +263,7 @@ main {
 .bus-list {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 12px; /* 增加路線卡片與卡片之間的空間 */
     overflow-y: auto;
     flex: 1;
     padding-right: 4px;
@@ -776,7 +776,7 @@ main {
     }
 
     #clock {
-        font-size:48px;
+        font-size:72px; /* 響應式放大 50% */
         letter-spacing:4px;
     }
 
@@ -842,7 +842,7 @@ main {
     }
 
     .bus-list {
-        gap:12px;
+        gap:16px; /* 平板/大螢幕上拉開更大間距 */
         padding-right:8px;
     }
 
@@ -941,7 +941,7 @@ main {
     }
 
     .night-clock {
-        font-size:14rem;
+        font-size:21rem; /* 加大夜間模式時鐘字體 50% (原 14rem -> 21rem) */
     }
 
     .night-date {
@@ -3883,529 +3883,27 @@ function finalizeDir(
             k < dirSelect.options.length;
             k++
         ) {
-
-            if (
-                String(
-                    dirSelect.options[k].value
-                ) ===
-                String(currentDir)
-            ) {
-
-                dirSelect.selectedIndex =
-                    k;
-
+            if (dirSelect.options[k].value === currentDir) {
+                dirSelect.selectedIndex = k;
                 break;
             }
         }
     }
 
-    item.setAttribute(
-        'data-current-dir',
-        dirSelect.value
-    );
+    var selectedOpt =
+        dirSelect.options[dirSelect.selectedIndex];
 
-    var index =
-        parseInt(
-            item.getAttribute('data-index'),
-            10
-        );
-
-    if (
-        !isNaN(index) &&
-        currentBuses[index]
-    ) {
-
-        currentBuses[index].dir =
-            dirSelect.value;
-
-        if (
-            currentBuses[index].company ===
-            'nlb'
-        ) {
-
-            currentBuses[index].nlb_route_id =
-                dirSelect.value;
+    if (selectedOpt) {
+        item.setAttribute('data-current-dir', selectedOpt.value);
+        if (destInput && (!destInput.value || isUserAction)) {
+            destInput.value = selectedOpt.text;
         }
-    }
-
-    if (
-        isUserAction &&
-        dirSelect.options[
-            dirSelect.selectedIndex
-        ]
-    ) {
-
-        destInput.value =
-            dirSelect.options[
-                dirSelect.selectedIndex
-            ].text;
     }
 
     if (callback) {
         callback();
     }
 }
-
-/* =========================================================
-   車站
-========================================================= */
-
-function loadStopOptions(
-    index,
-    resetStop
-) {
-
-    var items =
-        document.querySelectorAll(
-            '.config-item'
-        );
-
-    var item =
-        items[index];
-
-    if (!item) {
-        return;
-    }
-
-    var company =
-        item.querySelector(
-            '.bus-company'
-        ).value;
-
-    var route =
-        item.querySelector(
-            '.bus-route'
-        ).value
-        .trim()
-        .toUpperCase();
-
-    var dirSelect =
-        item.querySelector(
-            '.bus-dir'
-        );
-
-    var dir =
-        dirSelect.value;
-
-    var stopSelect =
-        item.querySelector(
-            '.bus-stop'
-        );
-
-    var currentStop =
-        resetStop
-        ? ''
-        : (
-            currentBuses[index]
-            ? currentBuses[index].stop
-            : item.getAttribute(
-                'data-current-stop'
-            )
-        );
-
-    if (
-        !route ||
-        !dir
-    ) {
-
-        stopSelect.innerHTML =
-            '<option value="">' +
-            '請先選擇方向...' +
-            '</option>';
-
-        return;
-    }
-
-    stopSelect.innerHTML =
-        '<option value="">' +
-        '車站載入中...' +
-        '</option>';
-
-    if (
-        company === 'kmb' ||
-        company === 'lwb'
-    ) {
-
-        var kmbDir =
-            dir === 'inbound'
-            ? 'inbound'
-            : 'outbound';
-
-        getKmbStopsMap(
-            function(stopsMap) {
-
-                fetch(
-                    'https://data.etabus.gov.hk/v1/transport/kmb/route-stop/' +
-                    route +
-                    '/' +
-                    kmbDir +
-                    '/1'
-                )
-                .then(function(res) {
-                    return res.json();
-                })
-                .then(function(data) {
-
-                    var list =
-                        data.data || [];
-
-                    var html =
-                        '<option value="">' +
-                        '請選擇車站...' +
-                        '</option>';
-
-                    for (
-                        var i = 0;
-                        i < list.length;
-                        i++
-                    ) {
-
-                        var code =
-                            list[i].stop;
-
-                        var name =
-                            stopsMap[code] ||
-                            (
-                                '車站 ' +
-                                code
-                            );
-
-                        var selected =
-                            code ===
-                            currentStop
-                            ? 'selected'
-                            : '';
-
-                        html +=
-                            '<option value="' +
-                            escapeHtml(code) +
-                            '" ' +
-                            selected +
-                            '>' +
-                            (i + 1) +
-                            '. ' +
-                            escapeHtml(name) +
-                            '</option>';
-                    }
-
-                    stopSelect.innerHTML =
-                        html;
-
-                    if (
-                        currentStop &&
-                        currentBuses[index]
-                    ) {
-
-                        currentBuses[index].stop =
-                            currentStop;
-                    }
-                })
-                .catch(function() {
-
-                    if (
-                        currentStop
-                    ) {
-
-                        stopSelect.innerHTML =
-                            '<option value="' +
-                            escapeHtml(
-                                currentStop
-                            ) +
-                            '" selected>' +
-                            '已選代碼: ' +
-                            escapeHtml(
-                                currentStop
-                            ) +
-                            '</option>';
-
-                    } else {
-
-                        stopSelect.innerHTML =
-                            '<option value="">' +
-                            '載入車站失敗' +
-                            '</option>';
-                    }
-                });
-            }
-        );
-
-    } else if (
-        company === 'ctb'
-    ) {
-
-        fetch(
-            'https://rt.data.gov.hk/v2/transport/citybus/route-stop/CTB/' +
-            route +
-            '/' +
-            dir
-        )
-        .then(function(res) {
-            return res.json();
-        })
-        .then(function(data) {
-
-            var list =
-                data.data || [];
-
-            if (
-                list.length === 0
-            ) {
-
-                stopSelect.innerHTML =
-                    '<option value="">' +
-                    '無車站資料' +
-                    '</option>';
-
-                return;
-            }
-
-            var completedStops = 0;
-
-            var stopNames =
-                new Array(
-                    list.length
-                );
-
-            list.forEach(
-                function(sObj, idx) {
-
-                    fetch(
-                        'https://rt.data.gov.hk/v2/transport/citybus/stop/' +
-                        sObj.stop
-                    )
-                    .then(function(res) {
-                        return res.json();
-                    })
-                    .then(function(sData) {
-
-                        stopNames[idx] =
-                            sData.data
-                            ? sData.data.name_tc
-                            : sObj.stop;
-
-                        completedStops++;
-
-                        if (
-                            completedStops ===
-                            list.length
-                        ) {
-
-                            var html =
-                                '<option value="">' +
-                                '請選擇車站...' +
-                                '</option>';
-
-                            for (
-                                var k = 0;
-                                k < list.length;
-                                k++
-                            ) {
-
-                                var code =
-                                    list[k].stop;
-
-                                var name =
-                                    stopNames[k];
-
-                                var selected =
-                                    code ===
-                                    currentStop
-                                    ? 'selected'
-                                    : '';
-
-                                html +=
-                                    '<option value="' +
-                                    escapeHtml(code) +
-                                    '" ' +
-                                    selected +
-                                    '>' +
-                                    (k + 1) +
-                                    '. ' +
-                                    escapeHtml(name) +
-                                    '</option>';
-                            }
-
-                            stopSelect.innerHTML =
-                                html;
-                        }
-                    })
-                    .catch(function() {
-
-                        stopNames[idx] =
-                            sObj.stop;
-                        completedStops++;
-                    });
-                }
-            );
-        })
-        .catch(function() {
-            stopSelect.innerHTML =
-                '<option value="">' +
-                '載入車站失敗' +
-                '</option>';
-        });
-
-    } else if (
-        company === 'nlb'
-    ) {
-
-        getNLBStops(
-            dir,
-            function(stops) {
-
-                if (
-                    stops.length === 0
-                ) {
-
-                    stopSelect.innerHTML =
-                        '<option value="">' +
-                        '無車站資料' +
-                        '</option>';
-
-                    return;
-                }
-
-                var html =
-                    '<option value="">' +
-                    '請選擇車站...' +
-                    '</option>';
-
-                for (
-                    var m = 0;
-                    m < stops.length;
-                    m++
-                ) {
-
-                    var st =
-                        stops[m];
-
-                    var code =
-                        st.stopId;
-
-                    var name =
-                        st.stopName_c ||
-                        st.stopName_tc ||
-                        st.stopName_e ||
-                        code;
-
-                    var selected =
-                        String(code) ===
-                        String(currentStop)
-                        ? 'selected'
-                        : '';
-
-                    html +=
-                        '<option value="' +
-                        escapeHtml(code) +
-                        '" ' +
-                        selected +
-                        '>' +
-                        (m + 1) +
-                        '. ' +
-                        escapeHtml(name) +
-                        '</option>';
-                }
-
-                stopSelect.innerHTML =
-                    html;
-            }
-        );
-    }
-}
-
-function handleStopChange(index) {
-    syncConfigItemToBus(index);
-}
-
-function addNewBusConfig() {
-
-    currentBuses.push({
-        company: 'kmb',
-        route: '',
-        dir: 'outbound',
-        stop: '',
-        origin_name: '',
-        dest_name: '',
-        offset: 0
-    });
-
-    renderSettingsList();
-}
-
-function deleteBusConfig(index) {
-
-    currentBuses.splice(index, 1);
-
-    renderSettingsList();
-}
-
-function saveBusConfig() {
-
-    var items =
-        document.querySelectorAll('.config-item');
-
-    currentBuses = [];
-
-    for (var i = 0; i < items.length; i++) {
-
-        var item = items[i];
-
-        var company =
-            item.querySelector('.bus-company').value;
-
-        var route =
-            item.querySelector('.bus-route').value.trim().toUpperCase();
-
-        var dir =
-            item.querySelector('.bus-dir').value;
-
-        var stop =
-            item.querySelector('.bus-stop').value;
-
-        var origin_name =
-            item.querySelector('.bus-origin').value.trim();
-
-        var dest_name =
-            item.querySelector('.bus-dest').value.trim();
-
-        var offset =
-            parseFloat(item.querySelector('.bus-offset').value || 0);
-
-        if (route) {
-
-            var busObj = {
-                company: company,
-                route: route,
-                dir: dir,
-                stop: stop,
-                origin_name: origin_name,
-                dest_name: dest_name,
-                offset: offset
-            };
-
-            if (company === 'nlb') {
-                busObj.nlb_route_id = dir;
-            }
-
-            currentBuses.push(busObj);
-        }
-    }
-
-    var startVal =
-        document.getElementById('night-start-time').value;
-
-    var endVal =
-        document.getElementById('night-end-time').value;
-
-    localStorage.setItem('night_mode_start', startVal);
-    localStorage.setItem('night_mode_end', endVal);
-
-    localStorage.setItem('user_bus_configs_v15', JSON.stringify(currentBuses));
-
-    closeSettings();
-    fetchBusData();
-}
 </script>
-
 </body>
 </html>
