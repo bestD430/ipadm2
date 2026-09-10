@@ -3360,6 +3360,281 @@ function syncConfigItemToBus(index) {
 }
 
 /* =========================================================
+   新增 / 刪除 / 載入車站 / 變更車站 / 保存設定
+========================================================= */
+
+function addNewBusConfig() {
+    currentBuses.push({
+        company: 'kmb',
+        route: '',
+        dir: 'outbound',
+        stop: '',
+        origin_name: '',
+        dest_name: '',
+        offset: 0,
+        nlb_route_id: ''
+    });
+    renderSettingsList();
+}
+
+function deleteBusConfig(index) {
+    currentBuses.splice(index, 1);
+    renderSettingsList();
+}
+
+function handleStopChange(index) {
+
+    var items = document.querySelectorAll('.config-item');
+    var item = items[index];
+
+    if (!item) return;
+
+    var stopSelect = item.querySelector('.bus-stop');
+
+    if (stopSelect) {
+
+        currentBuses[index].stop = stopSelect.value;
+
+        item.setAttribute(
+            'data-current-stop',
+            stopSelect.value
+        );
+
+        var selectedOpt =
+            stopSelect.options[stopSelect.selectedIndex];
+
+        if (selectedOpt && selectedOpt.text) {
+
+            var stopName = selectedOpt.text
+                .replace(/^\d+\.\s*/, '')
+                .replace(/\s*\([^)]*\)/, '');
+
+            var originInput = item.querySelector('.bus-origin');
+
+            if (originInput && stopName && stopSelect.value) {
+                originInput.value = stopName;
+                currentBuses[index].origin_name = stopName;
+            }
+        }
+    }
+}
+
+function loadStopOptions(index, isUserAction) {
+
+    var items = document.querySelectorAll('.config-item');
+    var item = items[index];
+
+    if (!item) return;
+
+    var company = item.querySelector('.bus-company').value;
+    var route = item.querySelector('.bus-route').value.trim().toUpperCase();
+    var dir = item.querySelector('.bus-dir').value;
+    var stopSelect = item.querySelector('.bus-stop');
+
+    var currentStop = item.getAttribute('data-current-stop') || currentBuses[index].stop || '';
+
+    if (!route) {
+        stopSelect.innerHTML = '<option value="">請先輸入路線...</option>';
+        return;
+    }
+
+    stopSelect.innerHTML = '<option value="">車站載入中...</option>';
+
+    if (company === 'kmb' || company === 'lwb') {
+
+        var kmbDir = dir === 'inbound' ? 'inbound' : 'outbound';
+
+        fetch('https://data.etabus.gov.hk/v1/transport/kmb/route-stop/' + route + '/' + kmbDir + '/1')
+        .then(function(res) { return res.json(); })
+        .then(function(stopData) {
+
+            getKmbStopsMap(function(stopsMap) {
+
+                var stops = stopData.data || [];
+                var html = '<option value="">請選擇車站...</option>';
+
+                for (var i = 0; i < stops.length; i++) {
+
+                    var sCode = stops[i].stop;
+                    var sName = stopsMap[sCode] || sCode;
+                    var seq = stops[i].seq;
+
+                    var selected = (sCode === currentStop) ? 'selected' : '';
+
+                    html += '<option value="' + escapeHtml(sCode) + '" ' + selected + '>' +
+                            seq + '. ' + escapeHtml(sName) +
+                            '</option>';
+                }
+
+                stopSelect.innerHTML = html;
+            });
+        })
+        .catch(function() {
+            stopSelect.innerHTML = '<option value="">載入失敗</option>';
+        });
+
+    } else if (company === 'ctb') {
+
+        var ctbDir = dir === 'inbound' ? 'inbound' : 'outbound';
+
+        fetch('https://rt.data.gov.hk/v2/transport/citybus/route-stop/CTB/' + route + '/' + ctbDir)
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+
+            var stops = data.data || [];
+
+            if (stops.length === 0) {
+                stopSelect.innerHTML = '<option value="">無車站資料</option>';
+                return;
+            }
+
+            var html = '<option value="">請選擇車站...</option>';
+            var fetchedCount = 0;
+            var stopOptions = new Array(stops.length);
+
+            for (var i = 0; i < stops.length; i++) {
+
+                (function(idx) {
+
+                    var sCode = stops[idx].stop;
+                    var seq = stops[idx].seq;
+
+                    if (ctbStopsCache[sCode]) {
+
+                        stopOptions[idx] = { code: sCode, name: ctbStopsCache[sCode], seq: seq };
+                        fetchedCount++;
+
+                        if (fetchedCount === stops.length) {
+                            renderCtbOptions(stopSelect, stopOptions, currentStop);
+                        }
+
+                    } else {
+
+                        fetch('https://rt.data.gov.hk/v2/transport/citybus/stop/' + sCode)
+                        .then(function(res) { return res.json(); })
+                        .then(function(sData) {
+
+                            var name = (sData && sData.data && sData.data.name_tc) ? sData.data.name_tc : sCode;
+                            ctbStopsCache[sCode] = name;
+
+                            stopOptions[idx] = { code: sCode, name: name, seq: seq };
+                            fetchedCount++;
+
+                            if (fetchedCount === stops.length) {
+                                renderCtbOptions(stopSelect, stopOptions, currentStop);
+                            }
+                        })
+                        .catch(function() {
+
+                            stopOptions[idx] = { code: sCode, name: sCode, seq: seq };
+                            fetchedCount++;
+
+                            if (fetchedCount === stops.length) {
+                                renderCtbOptions(stopSelect, stopOptions, currentStop);
+                            }
+                        });
+                    }
+
+                })(i);
+            }
+        })
+        .catch(function() {
+            stopSelect.innerHTML = '<option value="">載入失敗</option>';
+        });
+
+    } else if (company === 'nlb') {
+
+        getNLBStops(dir, function(stops) {
+
+            if (!stops || stops.length === 0) {
+                stopSelect.innerHTML = '<option value="">無車站資料</option>';
+                return;
+            }
+
+            var html = '<option value="">請選擇車站...</option>';
+
+            for (var i = 0; i < stops.length; i++) {
+
+                var sCode = stops[i].stopId;
+                var sName = stops[i].stopName_c || stops[i].stopName_tc || stops[i].stopName_e || sCode;
+
+                var selected = (sCode === currentStop) ? 'selected' : '';
+
+                html += '<option value="' + escapeHtml(sCode) + '" ' + selected + '>' +
+                        (i + 1) + '. ' + escapeHtml(sName) +
+                        '</option>';
+            }
+
+            stopSelect.innerHTML = html;
+        });
+    }
+}
+
+function renderCtbOptions(selectEl, options, currentStop) {
+
+    var html = '<option value="">請選擇車站...</option>';
+
+    for (var i = 0; i < options.length; i++) {
+
+        if (!options[i]) continue;
+
+        var selected = (options[i].code === currentStop) ? 'selected' : '';
+
+        html += '<option value="' + escapeHtml(options[i].code) + '" ' + selected + '>' +
+                options[i].seq + '. ' + escapeHtml(options[i].name) +
+                '</option>';
+    }
+
+    selectEl.innerHTML = html;
+}
+
+function saveBusConfig() {
+
+    var items = document.querySelectorAll('.config-item');
+
+    currentBuses = [];
+
+    for (var i = 0; i < items.length; i++) {
+
+        var item = items[i];
+
+        var company = item.querySelector('.bus-company').value;
+        var route = item.querySelector('.bus-route').value.trim().toUpperCase();
+        var dir = item.querySelector('.bus-dir').value;
+        var stop = item.querySelector('.bus-stop').value;
+        var origin = item.querySelector('.bus-origin').value.trim();
+        var dest = item.querySelector('.bus-dest').value.trim();
+        var offset = parseFloat(item.querySelector('.bus-offset').value || 0);
+
+        if (!route) continue;
+
+        var busObj = {
+            company: company,
+            route: route,
+            dir: dir,
+            stop: stop,
+            origin_name: origin,
+            dest_name: dest,
+            offset: offset,
+            nlb_route_id: company === 'nlb' ? dir : ''
+        };
+
+        currentBuses.push(busObj);
+    }
+
+    var startEl = document.getElementById('night-start-time');
+    var endEl = document.getElementById('night-end-time');
+
+    if (startEl) localStorage.setItem('night_mode_start', startEl.value);
+    if (endEl) localStorage.setItem('night_mode_end', endEl.value);
+
+    localStorage.setItem('user_bus_configs_v15', JSON.stringify(currentBuses));
+
+    closeSettings();
+    fetchBusData();
+}
+
+/* =========================================================
    公司改變
 ========================================================= */
 
