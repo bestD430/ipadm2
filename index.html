@@ -402,18 +402,13 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 10px;
+        gap: 12px;
         margin-top: 8px;
     }
     .night-weather-current {
         display: flex;
         align-items: center;
         gap: 12px;
-    }
-    .night-weather-icon {
-        width: 56px;
-        height: 56px;
-        object-fit: contain;
     }
     .night-weather-temp {
         font-size: 2.4rem;
@@ -436,6 +431,13 @@
     .night-weather-warnings .warning-badge {
         font-size: 0.9rem;
         padding: 4px 10px;
+    }
+    /* 夜間 icon：移到警告下方，並增大 50% */
+    .night-weather-icon {
+        width: 84px;          /* 原本 56px × 1.5 */
+        height: 84px;
+        object-fit: contain;
+        margin-top: 4px;
     }
 
     .modal-overlay {
@@ -512,10 +514,13 @@
         .hint-text { font-size: 1rem; }
         .night-clock { font-size: 14rem; }
         .night-date { font-size: 2.5rem; }
-        .night-weather-icon { width: 80px; height: 80px; }
         .night-weather-temp { font-size: 3.2rem; }
         .night-weather-humidity { font-size: 1.4rem; }
         .night-weather-warnings .warning-badge { font-size: 1.1rem; padding: 6px 14px; }
+        .night-weather-icon {
+            width: 120px;     /* 原本 80px × 1.5 */
+            height: 120px;
+        }
     }
 </style>
 </head>
@@ -535,14 +540,17 @@
 
     <!-- 夜間天氣（時鐘下方） -->
     <div class="night-weather">
+        <!-- 溫度 + 濕度 -->
         <div class="night-weather-current">
-            <img id="night-weather-icon" class="night-weather-icon" src="" alt="天氣圖示" style="display:none;" />
             <span id="night-weather-temp" class="night-weather-temp">--°C</span>
             <span id="night-weather-humidity" class="night-weather-humidity">濕度 --%</span>
         </div>
+        <!-- 天氣警告 -->
         <div class="night-weather-warnings" id="night-weather-warnings">
             <span class="warning-badge none">載入中...</span>
         </div>
+        <!-- 天氣 icon（已移至警告下方，並增大 50%） -->
+        <img id="night-weather-icon" class="night-weather-icon" src="" alt="天氣圖示" style="display:none;" />
     </div>
 
     <div class="night-tip">輕按一下顯示路線資料</div>
