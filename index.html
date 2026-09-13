@@ -18,7 +18,7 @@
         height: 100vh;
         display: flex;
         flex-direction: column;
-        padding: 16px;
+        padding: 12px;
         overflow: hidden;
     }
     header {
@@ -29,16 +29,16 @@
         border-bottom: 1px solid #334155;
         margin-bottom: 10px;
         flex-shrink: 0;
-        gap: 10px;
+        gap: 12px;
     }
 
-    /* 天氣區塊樣式 (位於時鐘左方) */
+    /* 天氣區塊 */
     .weather-container {
         display: flex;
         flex-direction: column;
         align-items: flex-start;
         justify-content: center;
-        gap: 4px;
+        gap: 5px;
     }
     .weather-current {
         display: flex;
@@ -46,34 +46,34 @@
         gap: 8px;
     }
     .weather-icon {
-        width: 40px;
-        height: 40px;
+        width: 44px;
+        height: 44px;
         object-fit: contain;
     }
     .weather-temp {
-        font-size: 1.5rem;
+        font-size: 1.7rem;
         font-weight: 700;
         color: #ffffff;
         line-height: 1;
     }
     .weather-humidity {
-        font-size: 0.85rem;
+        font-size: 0.95rem;
         color: #94a3b8;
         font-weight: 500;
     }
     .weather-warnings {
         display: flex;
         flex-wrap: wrap;
-        gap: 4px;
+        gap: 5px;
         align-items: center;
     }
     .warning-badge {
         background: #ef4444;
         color: #ffffff;
-        font-size: 0.75rem;
+        font-size: 0.8rem;
         font-weight: bold;
-        padding: 2px 6px;
-        border-radius: 4px;
+        padding: 3px 7px;
+        border-radius: 5px;
         white-space: nowrap;
         box-shadow: 0 1px 3px rgba(0,0,0,0.3);
     }
@@ -95,7 +95,7 @@
         justify-content: flex-end;
     }
     #clock, .night-clock {
-        font-size: 48px;
+        font-size: 42px;
         font-weight: 700;
         letter-spacing: 2px;
         color: #ffffff;
@@ -112,7 +112,7 @@
         line-height: 1.1;
     }
     .clock-ampm {
-        font-size: 21px;
+        font-size: 18px;
         font-weight: 600;
         line-height: 1.1;
         display: block;
@@ -120,7 +120,7 @@
         white-space: nowrap !important;
     }
     .clock-seconds {
-        font-size: 21px;
+        font-size: 18px;
         font-weight: 600;
         line-height: 1.1;
         opacity: 0.85;
@@ -131,10 +131,10 @@
         align-items: center;
         justify-content: flex-end;
         gap: 8px;
-        margin-top: 4px;
+        margin-top: 3px;
     }
     #date, .night-date {
-        font-size: 1rem;
+        font-size: 1.05rem;
         color: #94a3b8;
         text-align: right;
         white-space: nowrap;
@@ -143,9 +143,9 @@
         display: none;
         background: #dc2626;
         color: #ffffff;
-        padding: 10px 14px;
+        padding: 12px 16px;
         border-radius: 12px;
-        font-size: 1.5rem;
+        font-size: 1.4rem;
         font-weight: bold;
         text-align: center;
         margin-bottom: 12px;
@@ -157,22 +157,22 @@
         display: flex;
         flex: 1;
         flex-direction: column;
-        gap: 16px;
+        gap: 12px;
         overflow: hidden;
     }
     .bus-panel {
         flex: 1;
         background: #1e293b;
-        border-radius: 16px;
+        border-radius: 14px;
         padding: 14px;
         display: flex;
         flex-direction: column;
         overflow: hidden;
     }
     .panel-title {
-        font-size: 0.9rem;
+        font-size: 0.95rem;
         font-weight: bold;
-        margin-bottom: 6px;
+        margin-bottom: 8px;
         color: #f59e0b;
         display: flex;
         justify-content: space-between;
@@ -183,28 +183,28 @@
         background: #334155;
         color: #f8fafc;
         border: 1px solid #475569;
-        padding: 4px 8px;
+        padding: 5px 10px;
         border-radius: 6px;
-        font-size: 0.75rem;
+        font-size: 0.8rem;
         cursor: pointer;
     }
     .bus-list {
         display: flex;
         flex-direction: column;
-        gap: 8px;
+        gap: 10px;
         overflow-y: auto;
         flex: 1;
         padding-right: 4px;
         -webkit-overflow-scrolling: touch;
     }
     .bus-item {
-        border-radius: 10px;
-        padding: 8px 10px;
+        border-radius: 12px;
+        padding: 10px 12px;
         display: flex;
         flex-direction: row;
         justify-content: space-between;
         align-items: center;
-        gap: 8px;
+        gap: 10px;
         width: 100%;
         border: 1px solid rgba(255, 255, 255, 0.2);
         color: #ffffff;
@@ -230,7 +230,7 @@
     .bus-header-grid {
         display: grid;
         grid-template-columns: auto 1fr;
-        column-gap: 6px;
+        column-gap: 7px;
         row-gap: 2px;
         align-items: center;
         flex: 1;
@@ -241,7 +241,7 @@
         grid-column: 1;
         writing-mode: vertical-rl;
         text-orientation: upright;
-        font-size: 0.75rem;
+        font-size: 0.8rem;
         padding: 3px 2px;
         border-radius: 4px;
         font-weight: bold;
@@ -263,7 +263,7 @@
     .bus-name {
         grid-row: 1;
         grid-column: 2;
-        font-size: 3.8rem;
+        font-size: 3.4rem;
         font-weight: 700;
         letter-spacing: 1px;
         line-height: 0.95;
@@ -282,7 +282,7 @@
         width: 100%;
     }
     .bus-origin-text {
-        font-size: 1.1rem;
+        font-size: 1.15rem;
         font-weight: 800;
         color: #ffffff;
         line-height: 1.2;
@@ -293,7 +293,7 @@
         width: 100%;
     }
     .bus-dest-text {
-        font-size: 0.85rem;
+        font-size: 0.9rem;
         font-weight: 600;
         opacity: 0.95;
         line-height: 1.2;
@@ -306,9 +306,9 @@
     .eta-group {
         display: flex;
         flex-direction: column;
-        gap: 3.15px;
+        gap: 4px;
         align-items: stretch;
-        width: 36%;
+        width: 34%;
         margin-left: auto;
         margin-right: 0;
         flex-shrink: 0;
@@ -316,18 +316,18 @@
     .eta-next-group {
         display: flex;
         flex-direction: row;
-        gap: 4px;
+        gap: 5px;
         width: 100%;
-        transform: translateY(5%);
+        transform: translateY(4%);
     }
     .eta-badge {
         flex: 1;
         background: rgba(15, 23, 42, 0.85);
         backdrop-filter: blur(4px);
-        border-radius: 6px;
-        padding: 4px 0.5px;
+        border-radius: 7px;
+        padding: 5px 1px;
         text-align: center;
-        font-size: 0.97rem;
+        font-size: 1.05rem;
         font-weight: bold;
         color: #ffffff;
         border: 1px solid rgba(255, 255, 255, 0.15);
@@ -342,10 +342,10 @@
     .eta-badge.first {
         width: 100%;
         background: rgba(15, 23, 42, 0.85);
-        font-size: 1.87rem;
+        font-size: 2.1rem;
         font-weight: 900;
-        padding: 6px 1px;
-        transform: translateY(-5%) scale(0.97, 1.02);
+        padding: 7px 2px;
+        transform: translateY(-4%) scale(0.97, 1.02);
     }
     .eta-badge.eta-green { color: #34d399; border-color: rgba(52, 211, 153, 0.4); }
     .eta-badge.eta-red { color: #d8121a; border-color: rgba(216, 18, 26, 0.6); }
@@ -365,7 +365,7 @@
     .eta-badge.eta-flash { animation: flashRedYellow 1s infinite; }
     .eta-badge.eta-flash-green { animation: flashRedGreen 1s infinite; }
     .eta-badge.eta-flash-three { animation: flashRedYellowGreen 1.2s infinite; }
-    .loading-text { text-align: center; color: #94a3b8; padding: 20px; font-size: 0.9rem; }
+    .loading-text { text-align: center; color: #94a3b8; padding: 20px; font-size: 0.95rem; }
 
     /* ========== 夜間黑屏 ========== */
     #night-screen {
@@ -378,8 +378,8 @@
         justify-content: center;
         align-items: center;
         cursor: pointer;
-        padding: 24px;
-        gap: 12px;
+        padding: 20px;
+        gap: 10px;
     }
     #night-screen.active { display: flex; }
     .night-time-sub-info {
@@ -390,20 +390,20 @@
     }
     .night-tip {
         position: absolute;
-        bottom: 24px;
+        bottom: 20px;
         color: #334155;
-        font-size: 0.85rem;
+        font-size: 0.9rem;
         letter-spacing: 1px;
         user-select: none;
     }
 
-    /* 夜間天氣區塊（時鐘下方） */
+    /* 夜間天氣 */
     .night-weather {
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 12px;
-        margin-top: 8px;
+        gap: 10px;
+        margin-top: 6px;
     }
     .night-weather-current {
         display: flex;
@@ -411,13 +411,13 @@
         gap: 12px;
     }
     .night-weather-temp {
-        font-size: 2.4rem;
+        font-size: 2.6rem;
         font-weight: 700;
         color: #ffffff;
         line-height: 1;
     }
     .night-weather-humidity {
-        font-size: 1.1rem;
+        font-size: 1.2rem;
         color: #94a3b8;
         font-weight: 500;
     }
@@ -429,17 +429,17 @@
         max-width: 90vw;
     }
     .night-weather-warnings .warning-badge {
-        font-size: 0.9rem;
+        font-size: 0.95rem;
         padding: 4px 10px;
     }
-    /* 夜間 icon：移到警告下方，並增大 50% */
     .night-weather-icon {
-        width: 84px;          /* 原本 56px × 1.5 */
-        height: 84px;
+        width: 90px;
+        height: 90px;
         object-fit: contain;
-        margin-top: 4px;
+        margin-top: 2px;
     }
 
+    /* Modal */
     .modal-overlay {
         position: fixed;
         top: 0; left: 0; right: 0; bottom: 0;
@@ -453,34 +453,162 @@
     .modal-content {
         background: #1e293b;
         border-radius: 16px;
-        width: 90%;
-        max-width: 650px;
+        width: 92%;
+        max-width: 680px;
         max-height: 85vh;
-        padding: 16px;
+        padding: 18px;
         border: 1px solid #475569;
         display: flex;
         flex-direction: column;
         gap: 12px;
     }
     .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #334155; padding-bottom: 8px; }
-    .modal-title { font-size: 1.1rem; font-weight: bold; color: #38bdf8; }
-    .modal-close { background: none; border: none; color: #94a3b8; font-size: 1.6rem; cursor: pointer; padding: 4px; }
+    .modal-title { font-size: 1.2rem; font-weight: bold; color: #38bdf8; }
+    .modal-close { background: none; border: none; color: #94a3b8; font-size: 1.8rem; cursor: pointer; padding: 4px; }
     .night-time-section { background: #0f172a; border-radius: 8px; padding: 12px; border: 1px solid #334155; display: flex; flex-direction: column; gap: 8px; }
-    .night-time-title { font-size: 0.95rem; font-weight: bold; color: #f59e0b; }
-    .night-time-inputs { display: flex; align-items: center; gap: 10px; font-size: 0.9rem; color: #cbd5e1; }
+    .night-time-title { font-size: 1rem; font-weight: bold; color: #f59e0b; }
+    .night-time-inputs { display: flex; align-items: center; gap: 12px; font-size: 0.95rem; color: #cbd5e1; }
     .config-list { display: flex; flex-direction: column; gap: 10px; overflow-y: auto; max-height: 45vh; -webkit-overflow-scrolling: touch; }
-    .config-item { background: #0f172a; border-radius: 8px; padding: 10px; border: 1px solid #334155; display: flex; flex-direction: column; gap: 8px; }
+    .config-item { background: #0f172a; border-radius: 8px; padding: 12px; border: 1px solid #334155; display: flex; flex-direction: column; gap: 8px; }
     .config-row { display: flex; gap: 8px; align-items: center; }
-    .config-input, .config-select { background: #1e293b; border: 1px solid #475569; color: #fff; padding: 8px; border-radius: 6px; font-size: 0.9rem; outline: none; }
+    .config-input, .config-select { background: #1e293b; border: 1px solid #475569; color: #fff; padding: 9px; border-radius: 6px; font-size: 0.95rem; outline: none; }
     .config-input, .config-route-container { flex: 1; }
     .config-select.bus-stop { flex: 1.5; }
-    .delete-btn { background: #991b1b; color: #fca5a5; border: none; padding: 8px 12px; border-radius: 6px; font-size: 0.9rem; cursor: pointer; }
+    .delete-btn { background: #991b1b; color: #fca5a5; border: none; padding: 9px 12px; border-radius: 6px; font-size: 0.95rem; cursor: pointer; }
     .modal-footer { display: flex; justify-content: space-between; border-top: 1px solid #334155; padding-top: 12px; margin-top: 4px; }
-    .action-btn { background: #0284c7; color: white; border: none; padding: 10px 16px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 0.95rem; }
+    .action-btn { background: #0284c7; color: white; border: none; padding: 11px 18px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 1rem; }
     .add-btn { background: #166534; color: #86efac; }
-    .hint-text { font-size: 0.8rem; color: #94a3b8; }
-    @media (min-width: 768px) {
-        body { padding: 24px; gap: 8px; }
+    .hint-text { font-size: 0.85rem; color: #94a3b8; }
+
+    /* ========== iPad Mini 2 專用優化 (768px ~ 1024px) ========== */
+    @media (min-width: 768px) and (max-width: 1024px) {
+        body {
+            padding: 16px;
+        }
+        header {
+            padding-bottom: 12px;
+            margin-bottom: 12px;
+        }
+        .weather-icon {
+            width: 52px;
+            height: 52px;
+        }
+        .weather-temp {
+            font-size: 2.1rem;
+        }
+        .weather-humidity {
+            font-size: 1.05rem;
+        }
+        .warning-badge {
+            font-size: 0.9rem;
+            padding: 4px 9px;
+        }
+        #clock {
+            font-size: 52px;
+            letter-spacing: 3px;
+        }
+        .clock-ampm, .clock-seconds {
+            font-size: 20px;
+        }
+        #date {
+            font-size: 1.15rem;
+        }
+        .school-notice {
+            font-size: 1.6rem;
+            padding: 14px 18px;
+        }
+        .bus-panel {
+            padding: 16px;
+            border-radius: 16px;
+        }
+        .panel-title {
+            font-size: 1.05rem;
+            margin-bottom: 10px;
+        }
+        .settings-btn {
+            font-size: 0.9rem;
+            padding: 6px 12px;
+        }
+        .bus-list {
+            gap: 11px;
+        }
+        .bus-item {
+            padding: 11px 14px;
+            border-radius: 13px;
+        }
+        .bus-name {
+            font-size: 4.2rem;
+        }
+        .bus-origin-text {
+            font-size: 1.35rem;
+        }
+        .bus-dest-text {
+            font-size: 1.05rem;
+        }
+        .bus-company-tag {
+            font-size: 0.85rem;
+            padding: 4px 3px;
+        }
+        .eta-group {
+            width: 32%;
+            gap: 5px;
+        }
+        .eta-badge {
+            font-size: 1.2rem;
+            padding: 6px 2px;
+            border-radius: 8px;
+        }
+        .eta-badge.first {
+            font-size: 2.5rem;
+            padding: 8px 2px;
+        }
+
+        /* 夜間黑屏 - iPad Mini 適中尺寸 */
+        .night-clock {
+            font-size: 9.5rem;
+        }
+        .night-date {
+            font-size: 1.8rem;
+        }
+        .night-weather-temp {
+            font-size: 3rem;
+        }
+        .night-weather-humidity {
+            font-size: 1.35rem;
+        }
+        .night-weather-warnings .warning-badge {
+            font-size: 1.05rem;
+            padding: 5px 12px;
+        }
+        .night-weather-icon {
+            width: 110px;
+            height: 110px;
+        }
+        .night-tip {
+            font-size: 1rem;
+            bottom: 24px;
+        }
+
+        .modal-content {
+            max-width: 720px;
+            padding: 20px;
+        }
+        .modal-title {
+            font-size: 1.3rem;
+        }
+        .config-input, .config-select {
+            font-size: 1.05rem;
+            padding: 11px;
+        }
+        .action-btn {
+            font-size: 1.1rem;
+            padding: 12px 20px;
+        }
+    }
+
+    /* 更大螢幕 (iPad Pro / 桌面) */
+    @media (min-width: 1025px) {
+        body { padding: 24px; }
         header { padding-bottom: 16px; border-bottom: 2px solid #334155; }
         .weather-icon { width: 52px; height: 52px; }
         .weather-temp { font-size: 2.2rem; }
@@ -512,15 +640,12 @@
         .delete-btn { font-size: 1.05rem; padding: 12px 16px; }
         .action-btn { font-size: 1.2rem; padding: 14px 24px; }
         .hint-text { font-size: 1rem; }
-        .night-clock { font-size: 14rem; }
-        .night-date { font-size: 2.5rem; }
+        .night-clock { font-size: 12rem; }
+        .night-date { font-size: 2.2rem; }
         .night-weather-temp { font-size: 3.2rem; }
         .night-weather-humidity { font-size: 1.4rem; }
         .night-weather-warnings .warning-badge { font-size: 1.1rem; padding: 6px 14px; }
-        .night-weather-icon {
-            width: 120px;     /* 原本 80px × 1.5 */
-            height: 120px;
-        }
+        .night-weather-icon { width: 120px; height: 120px; }
     }
 </style>
 </head>
@@ -540,16 +665,13 @@
 
     <!-- 夜間天氣（時鐘下方） -->
     <div class="night-weather">
-        <!-- 溫度 + 濕度 -->
         <div class="night-weather-current">
             <span id="night-weather-temp" class="night-weather-temp">--°C</span>
             <span id="night-weather-humidity" class="night-weather-humidity">濕度 --%</span>
         </div>
-        <!-- 天氣警告 -->
         <div class="night-weather-warnings" id="night-weather-warnings">
             <span class="warning-badge none">載入中...</span>
         </div>
-        <!-- 天氣 icon（已移至警告下方，並增大 50%） -->
         <img id="night-weather-icon" class="night-weather-icon" src="" alt="天氣圖示" style="display:none;" />
     </div>
 
@@ -558,7 +680,6 @@
 
 <!-- Header -->
 <header>
-    <!-- 天氣區塊（時鐘左方：上方現時天氣圖示與溫度，下方天氣警告） -->
     <div class="weather-container">
         <div class="weather-current">
             <img id="weather-icon" class="weather-icon" src="" alt="天氣圖示" style="display:none;" />
@@ -570,7 +691,6 @@
         </div>
     </div>
 
-    <!-- 時鐘區塊 -->
     <div class="header-right">
         <div class="clock-container">
             <div id="clock">
@@ -588,7 +708,6 @@
 </header>
 <div id="school-closure-notice" class="school-notice"></div>
 
-<!-- 主內容 -->
 <main>
     <section class="bus-panel">
         <div class="panel-title">
@@ -641,37 +760,31 @@ function fetchWeatherData() {
     var weatherUrl = 'https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=rhrread&lang=tc';
     var warningUrl = 'https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=warnsum&lang=tc';
 
-    // 抓取現時天氣資料 (氣溫、濕度、天氣圖示)
     fetch(weatherUrl)
         .then(function(res) { return res.json(); })
         .then(function(data) {
             if (data) {
-                // 氣溫
                 if (data.temperature && data.temperature.data && data.temperature.data.length > 0) {
                     var tempVal = data.temperature.data[0].value;
                     var tempText = tempVal + '°C';
                     document.getElementById('weather-temp').innerText = tempText;
                     document.getElementById('night-weather-temp').innerText = tempText;
                 }
-                // 濕度
                 if (data.humidity && data.humidity.data && data.humidity.data.length > 0) {
                     var humVal = data.humidity.data[0].value;
                     var humText = '濕度 ' + humVal + '%';
                     document.getElementById('weather-humidity').innerText = humText;
                     document.getElementById('night-weather-humidity').innerText = humText;
                 }
-                // 天氣圖示（官方正確路徑）
                 if (data.icon && data.icon.length > 0) {
                     var iconCode = String(data.icon[0]);
                     var iconUrl = 'https://www.hko.gov.hk/images/wxicon/pic' + iconCode + '.png';
 
-                    // 白天 icon
                     var dayIcon = document.getElementById('weather-icon');
                     dayIcon.src = iconUrl;
                     dayIcon.style.display = 'block';
                     dayIcon.onerror = function() { this.style.display = 'none'; };
 
-                    // 夜間 icon
                     var nightIcon = document.getElementById('night-weather-icon');
                     nightIcon.src = iconUrl;
                     nightIcon.style.display = 'block';
@@ -681,7 +794,6 @@ function fetchWeatherData() {
         })
         .catch(function(e) {});
 
-    // 抓取天氣警告
     fetch(warningUrl)
         .then(function(res) { return res.json(); })
         .then(function(data) {
@@ -720,7 +832,7 @@ function fetchWeatherData() {
 }
 
 fetchWeatherData();
-setInterval(fetchWeatherData, 300000); // 每 5 分鐘自動刷新天氣
+setInterval(fetchWeatherData, 300000);
 
 /* =========================================================
    KMB 車站名稱
@@ -1190,7 +1302,7 @@ function closeSettings() {
 }
 
 /* =========================================================
-   設定列表 (一次性渲染 + 順序更新選單)
+   設定列表
    ========================================================= */
 function renderSettingsList() {
     var container = document.getElementById('config-list');
@@ -1254,18 +1366,12 @@ function renderSettingsList() {
     }
 }
 
-/* =========================================================
-   路線輸入
-   ========================================================= */
 function renderRouteControl(company, currentRoute, index) {
     return '<input type="text" class="config-input bus-route" placeholder="' + 
         (company === 'nlb' ? '路線 (例: 3M、11、B6)' : '路線 (例: E33)') + 
         '" value="' + escapeHtml(currentRoute || '') + '" onchange="onBusMetaChanged(' + index + ')">';
 }
 
-/* =========================================================
-   公司改變
-   ========================================================= */
 function onCompanyChanged(index) {
     var items = document.querySelectorAll('.config-item');
     var item = items[index];
@@ -1280,18 +1386,12 @@ function onCompanyChanged(index) {
     onBusMetaChanged(index);
 }
 
-/* =========================================================
-   路線改變
-   ========================================================= */
 function onBusMetaChanged(index) {
     updateDirectionOptions(index, true, function() {
         loadStopOptions(index, true);
     });
 }
 
-/* =========================================================
-   方向改變
-   ========================================================= */
 function onDirectionChanged(index) {
     var items = document.querySelectorAll('.config-item');
     var item = items[index];
@@ -1310,9 +1410,6 @@ function onDirectionChanged(index) {
     loadStopOptions(index, false);
 }
 
-/* =========================================================
-   方向選項與 NLB 完整閉合邏輯
-   ========================================================= */
 function updateDirectionOptions(index, isUserAction, callback) {
     var items = document.querySelectorAll('.config-item');
     var item = items[index];
@@ -1413,9 +1510,6 @@ function finalizeDir(dirSelect, item, currentDir, isUserAction, destInput, callb
     if (callback) callback();
 }
 
-/* =========================================================
-   載入車站選單
-   ========================================================= */
 function loadStopOptions(index, resetStop) {
     var items = document.querySelectorAll('.config-item');
     var item = items[index];
