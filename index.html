@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>交通及天氣看板</title>
+    <title>交通看板</title>
 <style>
     * {
         box-sizing: border-box;
@@ -31,12 +31,58 @@
         flex-shrink: 0;
         gap: 10px;
     }
-    .header-left {
+
+    /* 天氣區塊樣式 (位於時鐘左方) */
+    .weather-container {
         display: flex;
         flex-direction: column;
-        gap: 6px;
         align-items: flex-start;
+        justify-content: center;
+        gap: 4px;
     }
+    .weather-current {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .weather-icon {
+        width: 40px;
+        height: 40px;
+        object-fit: contain;
+    }
+    .weather-temp {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #ffffff;
+        line-height: 1;
+    }
+    .weather-humidity {
+        font-size: 0.85rem;
+        color: #94a3b8;
+        font-weight: 500;
+    }
+    .weather-warnings {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px;
+        align-items: center;
+    }
+    .warning-badge {
+        background: #ef4444;
+        color: #ffffff;
+        font-size: 0.75rem;
+        font-weight: bold;
+        padding: 2px 6px;
+        border-radius: 4px;
+        white-space: nowrap;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+    }
+    .warning-badge.none {
+        background: #334155;
+        color: #94a3b8;
+        font-weight: normal;
+    }
+
     .header-right {
         display: flex;
         flex-direction: column;
@@ -92,89 +138,6 @@
         color: #94a3b8;
         text-align: right;
         white-space: nowrap;
-    }
-    .weather-sub-bar {
-        display: flex;
-        align-items: center;
-        justify-content: flex-start;
-        gap: 8px;
-        flex-wrap: wrap;
-    }
-    .weather-info-box {
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        background: #1e293b;
-        padding: 2px 10px;
-        border-radius: 20px;
-        border: 1px solid #334155;
-    }
-    .weather-icon {
-        width: 36px;
-        height: 36px;
-        object-fit: contain;
-    }
-    .weather-emoji {
-        font-size: 2.475rem;
-        line-height: 1;
-    }
-    .weather-temp {
-        font-size: 2.25rem;
-        font-weight: bold;
-        color: #38bdf8;
-    }
-    .weather-psr {
-        font-size: 0.85rem;
-        font-weight: 600;
-        color: #38bdf8;
-        background: #1e293b;
-        padding: 2px 8px;
-        border-radius: 12px;
-        border: 1px solid #0284c7;
-        white-space: nowrap;
-    }
-    .weather-warnings {
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        flex-wrap: wrap;
-    }
-    .warning-badge {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        padding: 3px 15px;
-        border-radius: 20px;
-        font-size: 1.32rem;
-        font-weight: bold;
-        color: #ffffff;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.3);
-        white-space: nowrap;
-    }
-    .badge-none {
-        background: #334155;
-        color: #94a3b8;
-    }
-    .badge-yellow-rain {
-        background: #eab308;
-        color: #000;
-    }
-    .badge-red-rain {
-        background: #dc2626;
-        color: #fff;
-    }
-    .badge-black-rain {
-        background: #000000;
-        color: #fff;
-        border: 1px solid #475569;
-    }
-    .badge-tc {
-        background: #ea580c;
-        color: #fff;
-    }
-    .badge-ts {
-        background: #7c3aed;
-        color: #fff;
     }
     .school-notice {
         display: none;
@@ -403,6 +366,8 @@
     .eta-badge.eta-flash-green { animation: flashRedGreen 1s infinite; }
     .eta-badge.eta-flash-three { animation: flashRedYellowGreen 1.2s infinite; }
     .loading-text { text-align: center; color: #94a3b8; padding: 20px; font-size: 0.9rem; }
+
+    /* ========== 夜間黑屏 ========== */
     #night-screen {
         position: fixed;
         top: 0; left: 0; right: 0; bottom: 0;
@@ -414,15 +379,65 @@
         align-items: center;
         cursor: pointer;
         padding: 24px;
-        gap: 16px;
+        gap: 12px;
     }
     #night-screen.active { display: flex; }
-    .night-time-sub-info { display: flex; align-items: center; gap: 12px; justify-content: center; }
-    .night-weather-box { display: flex; align-items: center; gap: 12px; margin-top: 10px; }
-    .night-weather-icon { width: 12vw; height: 12vw; max-width: 80px; max-height: 80px; object-fit: contain; }
-    .night-temp { font-size: 8vw; font-weight: bold; color: #f8fafc; }
-    .night-warnings { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-top: 10px; }
-    .night-tip { position: absolute; bottom: 24px; color: #334155; font-size: 0.85rem; letter-spacing: 1px; user-select: none; }
+    .night-time-sub-info {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        justify-content: center;
+    }
+    .night-tip {
+        position: absolute;
+        bottom: 24px;
+        color: #334155;
+        font-size: 0.85rem;
+        letter-spacing: 1px;
+        user-select: none;
+    }
+
+    /* 夜間天氣區塊（時鐘下方） */
+    .night-weather {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        margin-top: 8px;
+    }
+    .night-weather-current {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+    .night-weather-icon {
+        width: 56px;
+        height: 56px;
+        object-fit: contain;
+    }
+    .night-weather-temp {
+        font-size: 2.4rem;
+        font-weight: 700;
+        color: #ffffff;
+        line-height: 1;
+    }
+    .night-weather-humidity {
+        font-size: 1.1rem;
+        color: #94a3b8;
+        font-weight: 500;
+    }
+    .night-weather-warnings {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        justify-content: center;
+        max-width: 90vw;
+    }
+    .night-weather-warnings .warning-badge {
+        font-size: 0.9rem;
+        padding: 4px 10px;
+    }
+
     .modal-overlay {
         position: fixed;
         top: 0; left: 0; right: 0; bottom: 0;
@@ -465,15 +480,12 @@
     @media (min-width: 768px) {
         body { padding: 24px; gap: 8px; }
         header { padding-bottom: 16px; border-bottom: 2px solid #334155; }
+        .weather-icon { width: 52px; height: 52px; }
+        .weather-temp { font-size: 2.2rem; }
+        .weather-humidity { font-size: 1.05rem; }
+        .warning-badge { font-size: 0.85rem; padding: 3px 8px; }
         #clock { font-size: 48px; letter-spacing: 4px; }
         #date, .night-date { font-size: 1.2rem; }
-        .weather-sub-bar { gap: 12px; }
-        .weather-info-box { padding: 4px 14px; border-radius: 30px; gap: 8px; }
-        .weather-icon { width: 48px; height: 48px; }
-        .weather-emoji { font-size: 3.15rem; }
-        .weather-temp { font-size: 2.925rem; }
-        .weather-psr { font-size: 1rem; padding: 3px 10px; border-radius: 16px; }
-        .warning-badge { padding: 9px 21px; font-size: 1.65rem; border-radius: 20px; }
         .school-notice { font-size: 1.95rem; padding: 16px; border-radius: 16px; margin-bottom: 16px; }
         .bus-panel { padding: 24px; border-radius: 24px; }
         .panel-title { font-size: 1rem; margin-bottom: 14px; }
@@ -500,7 +512,10 @@
         .hint-text { font-size: 1rem; }
         .night-clock { font-size: 14rem; }
         .night-date { font-size: 2.5rem; }
-        .night-temp { font-size: 6rem; }
+        .night-weather-icon { width: 80px; height: 80px; }
+        .night-weather-temp { font-size: 3.2rem; }
+        .night-weather-humidity { font-size: 1.4rem; }
+        .night-weather-warnings .warning-badge { font-size: 1.1rem; padding: 6px 14px; }
     }
 </style>
 </head>
@@ -516,33 +531,38 @@
     </div>
     <div class="night-time-sub-info">
         <div id="night-date" class="night-date">--年--月--日 星期-</div>
-        <span id="night-weather-psr" class="weather-psr" style="display:none;">💧 降雨機率: --</span>
     </div>
-    <div class="night-weather-box">
-        <img id="night-weather-icon" class="night-weather-icon" src="" alt="weather icon" style="display:none;" />
-        <span id="night-weather-emoji" class="weather-emoji" style="display:none;">🌙</span>
-        <span id="night-temp" class="night-temp">--°C</span>
+
+    <!-- 夜間天氣（時鐘下方） -->
+    <div class="night-weather">
+        <div class="night-weather-current">
+            <img id="night-weather-icon" class="night-weather-icon" src="" alt="天氣圖示" style="display:none;" />
+            <span id="night-weather-temp" class="night-weather-temp">--°C</span>
+            <span id="night-weather-humidity" class="night-weather-humidity">濕度 --%</span>
+        </div>
+        <div class="night-weather-warnings" id="night-weather-warnings">
+            <span class="warning-badge none">載入中...</span>
+        </div>
     </div>
-    <div id="night-warnings" class="night-warnings">
-        <span class="warning-badge badge-none">🌙 天氣良好</span>
-    </div>
+
     <div class="night-tip">輕按一下顯示路線資料</div>
 </div>
 
 <!-- Header -->
 <header>
-    <div class="header-left">
-        <div class="weather-sub-bar">
-            <div class="weather-info-box" id="weather-info-box" style="display: none;">
-                <img id="weather-icon" class="weather-icon" src="" alt="weather icon" />
-                <span id="weather-emoji-fallback" class="weather-emoji" style="display: none;">🌤️</span>
-                <span id="weather-temp" class="weather-temp">--°C</span>
-            </div>
-            <div class="weather-warnings" id="weather-warnings">
-                <span class="warning-badge badge-none">☀️ 天氣良好</span>
-            </div>
+    <!-- 天氣區塊（時鐘左方：上方現時天氣圖示與溫度，下方天氣警告） -->
+    <div class="weather-container">
+        <div class="weather-current">
+            <img id="weather-icon" class="weather-icon" src="" alt="天氣圖示" style="display:none;" />
+            <span id="weather-temp" class="weather-temp">--°C</span>
+            <span id="weather-humidity" class="weather-humidity">濕度 --%</span>
+        </div>
+        <div class="weather-warnings" id="weather-warnings">
+            <span class="warning-badge none">載入中...</span>
         </div>
     </div>
+
+    <!-- 時鐘區塊 -->
     <div class="header-right">
         <div class="clock-container">
             <div id="clock">
@@ -554,7 +574,6 @@
             </div>
         </div>
         <div class="time-sub-info">
-            <span id="weather-psr" class="weather-psr" style="display: none;">💧 降雨機率: --</span>
             <div id="date">--年--月--日 星期-</div>
         </div>
     </div>
@@ -606,6 +625,94 @@ var isManuallyWoken = false;
 var currentBuses = [];
 var cachedRawEtas = {};
 var nlbRouteCache = null;
+
+/* =========================================================
+   香港天文台 天氣 API（白天 + 夜間同步更新）
+   ========================================================= */
+function fetchWeatherData() {
+    var weatherUrl = 'https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=rhrread&lang=tc';
+    var warningUrl = 'https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=warnsum&lang=tc';
+
+    // 抓取現時天氣資料 (氣溫、濕度、天氣圖示)
+    fetch(weatherUrl)
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+            if (data) {
+                // 氣溫
+                if (data.temperature && data.temperature.data && data.temperature.data.length > 0) {
+                    var tempVal = data.temperature.data[0].value;
+                    var tempText = tempVal + '°C';
+                    document.getElementById('weather-temp').innerText = tempText;
+                    document.getElementById('night-weather-temp').innerText = tempText;
+                }
+                // 濕度
+                if (data.humidity && data.humidity.data && data.humidity.data.length > 0) {
+                    var humVal = data.humidity.data[0].value;
+                    var humText = '濕度 ' + humVal + '%';
+                    document.getElementById('weather-humidity').innerText = humText;
+                    document.getElementById('night-weather-humidity').innerText = humText;
+                }
+                // 天氣圖示（官方正確路徑）
+                if (data.icon && data.icon.length > 0) {
+                    var iconCode = String(data.icon[0]);
+                    var iconUrl = 'https://www.hko.gov.hk/images/wxicon/pic' + iconCode + '.png';
+
+                    // 白天 icon
+                    var dayIcon = document.getElementById('weather-icon');
+                    dayIcon.src = iconUrl;
+                    dayIcon.style.display = 'block';
+                    dayIcon.onerror = function() { this.style.display = 'none'; };
+
+                    // 夜間 icon
+                    var nightIcon = document.getElementById('night-weather-icon');
+                    nightIcon.src = iconUrl;
+                    nightIcon.style.display = 'block';
+                    nightIcon.onerror = function() { this.style.display = 'none'; };
+                }
+            }
+        })
+        .catch(function(e) {});
+
+    // 抓取天氣警告
+    fetch(warningUrl)
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+            var warningsList = [];
+
+            if (data && typeof data === 'object') {
+                for (var key in data) {
+                    if (data.hasOwnProperty(key) && data[key].actionCode !== 'CANCEL') {
+                        var name = data[key].name || key;
+                        warningsList.push(name);
+                    }
+                }
+            }
+
+            var dayContainer = document.getElementById('weather-warnings');
+            var nightContainer = document.getElementById('night-weather-warnings');
+
+            if (warningsList.length > 0) {
+                var html = '';
+                for (var i = 0; i < warningsList.length; i++) {
+                    html += '<span class="warning-badge">' + escapeHtml(warningsList[i]) + '</span>';
+                }
+                dayContainer.innerHTML = html;
+                nightContainer.innerHTML = html;
+            } else {
+                var noneHtml = '<span class="warning-badge none">無現行警告</span>';
+                dayContainer.innerHTML = noneHtml;
+                nightContainer.innerHTML = noneHtml;
+            }
+        })
+        .catch(function(e) {
+            var noneHtml = '<span class="warning-badge none">無現行警告</span>';
+            document.getElementById('weather-warnings').innerHTML = noneHtml;
+            document.getElementById('night-weather-warnings').innerHTML = noneHtml;
+        });
+}
+
+fetchWeatherData();
+setInterval(fetchWeatherData, 300000); // 每 5 分鐘自動刷新天氣
 
 /* =========================================================
    KMB 車站名稱
@@ -718,130 +825,6 @@ setInterval(updateClock, 1000);
 updateClock();
 
 /* =========================================================
-   天氣
-   ========================================================= */
-function fetchWeatherData() {
-    var container = document.getElementById('weather-warnings');
-    var nightContainer = document.getElementById('night-warnings');
-    var weatherBox = document.getElementById('weather-info-box');
-    var weatherIcon = document.getElementById('weather-icon');
-    var nightWeatherIcon = document.getElementById('night-weather-icon');
-    var emojiFallback = document.getElementById('weather-emoji-fallback');
-    var nightEmojiFallback = document.getElementById('night-weather-emoji');
-    var weatherTemp = document.getElementById('weather-temp');
-    var nightTemp = document.getElementById('night-temp');
-    var weatherPsr = document.getElementById('weather-psr');
-    var nightWeatherPsr = document.getElementById('night-weather-psr');
-
-    var currentHour = new Date().getHours();
-    var isNightNow = (currentHour >= 18 || currentHour < 6);
-
-    fetch('https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=rhrread&lang=tc')
-        .then(function(res) { return res.json(); })
-        .then(function(rhrData) {
-            if (rhrData && rhrData.icon && rhrData.icon.length > 0) {
-                var iconId = rhrData.icon[0];
-                var iconSrc = 'weather-icons/pic' + iconId + '.png';
-                if (weatherIcon) {
-                    weatherIcon.style.display = 'block';
-                    if (emojiFallback) emojiFallback.style.display = 'none';
-                    weatherIcon.src = iconSrc;
-                    weatherIcon.onerror = function() {
-                        this.style.display = 'none';
-                        if (emojiFallback) {
-                            emojiFallback.style.display = 'inline';
-                            emojiFallback.innerText = isNightNow ? '🌙' : '🌤️';
-                        }
-                    };
-                }
-                if (nightWeatherIcon) {
-                    nightWeatherIcon.style.display = 'block';
-                    if (nightEmojiFallback) nightEmojiFallback.style.display = 'none';
-                    nightWeatherIcon.src = iconSrc;
-                    nightWeatherIcon.onerror = function() {
-                        this.style.display = 'none';
-                        if (nightEmojiFallback) {
-                            nightEmojiFallback.style.display = 'inline';
-                            nightEmojiFallback.innerText = '🌙';
-                        }
-                    };
-                }
-                if (weatherBox) weatherBox.style.display = 'flex';
-            }
-            if (rhrData && rhrData.temperature && rhrData.temperature.data) {
-                var temps = rhrData.temperature.data;
-                var val = '--';
-                for (var i = 0; i < temps.length; i++) {
-                    if (temps[i].place === '香港天文台') {
-                        val = temps[i].value;
-                        break;
-                    }
-                }
-                if (val === '--' && temps.length > 0) val = temps[0].value;
-                if (weatherTemp) weatherTemp.innerText = val + '°C';
-                if (nightTemp) nightTemp.innerText = val + '°C';
-            }
-        }).catch(function(e) {});
-
-    fetch('https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=flw&lang=tc')
-        .then(function(res) { return res.json(); })
-        .then(function(flwData) {
-            if (flwData && flwData.psr) {
-                var psrStr = '💧 降雨機率: ' + flwData.psr;
-                if (weatherPsr) {
-                    weatherPsr.innerText = psrStr;
-                    weatherPsr.style.display = 'inline-block';
-                }
-                if (nightWeatherPsr) {
-                    nightWeatherPsr.innerText = psrStr;
-                    nightWeatherPsr.style.display = 'inline-block';
-                }
-            }
-        }).catch(function(e) {});
-
-    fetch('https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=warnsum&lang=tc')
-        .then(function(res) { return res.json(); })
-        .then(function(data) {
-            var badges = [];
-            for (var key in data) {
-                if (!data.hasOwnProperty(key)) continue;
-                var item = data[key];
-                if (item && item.actionCode !== 'CANCEL') {
-                    if (key === 'WRAINA') badges.push('<span class="warning-badge badge-yellow-rain">🌧️ 黃雨</span>');
-                    else if (key === 'WRAINR') badges.push('<span class="warning-badge badge-red-rain">🌧️ 紅雨</span>');
-                    else if (key === 'WRAINB') badges.push('<span class="warning-badge badge-black-rain">🌧️ 黑雨</span>');
-                    else if (key.indexOf('WTCSGN') === 0) {
-                        var code = key.replace('WTCSGN', '');
-                        var tcText = code + '號風球';
-                        if (code === 'L') tcText = '1號戒備';
-                        else if (code === 'M') tcText = '3號強風';
-                        else if (code === '8NE') tcText = '8號東北';
-                        else if (code === '8SE') tcText = '8號東南';
-                        else if (code === '8NW') tcText = '8號西北';
-                        else if (code === '8SW') tcText = '8號西南';
-                        else if (code === '9') tcText = '9號烈風';
-                        else if (code === '10') tcText = '10號颶風';
-                        badges.push('<span class="warning-badge badge-tc">🌀 ' + tcText + '</span>');
-                    } else if (key === 'WTS') badges.push('<span class="warning-badge badge-ts">⛈️ 雷暴</span>');
-                    else if (key === 'SMS') badges.push('<span class="warning-badge badge-tc">💨 強烈季候風</span>');
-                }
-            }
-            var fineWeatherIcon = isNightNow ? '🌙' : '☀️';
-            var badgeHtml = badges.length > 0 ? badges.join('') : '<span class="warning-badge badge-none">' + fineWeatherIcon + ' 天氣良好</span>';
-            var nightBadgeHtml = badges.length > 0 ? badges.join('') : '<span class="warning-badge badge-none">🌙 天氣良好</span>';
-
-            if (container) container.innerHTML = badgeHtml;
-            if (nightContainer) nightContainer.innerHTML = nightBadgeHtml;
-        }).catch(function(e) {
-            var fineWeatherIcon = isNightNow ? '🌙' : '☀️';
-            var defaultHtml = '<span class="warning-badge badge-none">' + fineWeatherIcon + ' 天氣良好</span>';
-            var nightDefaultHtml = '<span class="warning-badge badge-none">🌙 天氣良好</span>';
-            if (container) container.innerHTML = defaultHtml;
-            if (nightContainer) nightContainer.innerHTML = nightDefaultHtml;
-        });
-}
-
-/* =========================================================
    政府新聞
    ========================================================= */
 function fetchGovPressRelease() {
@@ -884,9 +867,7 @@ function fetchGovPressRelease() {
         });
 }
 
-fetchWeatherData();
 fetchGovPressRelease();
-setInterval(fetchWeatherData, 60000);
 setInterval(fetchGovPressRelease, 60000);
 
 /* =========================================================
@@ -1201,7 +1182,7 @@ function closeSettings() {
 }
 
 /* =========================================================
-   設定列表 (修正：一次性渲染 + 順序更新選單)
+   設定列表 (一次性渲染 + 順序更新選單)
    ========================================================= */
 function renderSettingsList() {
     var container = document.getElementById('config-list');
@@ -1256,7 +1237,6 @@ function renderSettingsList() {
     
     container.innerHTML = fullHtml;
     
-    // 一次性渲染完成後，依序初始化每個項目的方向與車站
     for (var j = 0; j < currentBuses.length; j++) {
         (function(idx) {
             updateDirectionOptions(idx, false, function() {
