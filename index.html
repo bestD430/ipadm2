@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>交通看板</title>
 <style>
+    :root {
+        --font-scale: 1;
+        --card-padding: 10px;
+    }
     * {
         box-sizing: border-box;
         margin: 0;
@@ -51,13 +55,13 @@
         object-fit: contain;
     }
     .weather-temp {
-        font-size: 1.53rem;
+        font-size: calc(1.53rem * var(--font-scale));
         font-weight: 700;
         color: #ffffff;
         line-height: 1;
     }
     .weather-humidity {
-        font-size: 0.855rem;
+        font-size: calc(0.855rem * var(--font-scale));
         color: #94a3b8;
         font-weight: 500;
     }
@@ -70,7 +74,7 @@
     .warning-badge {
         background: #ef4444;
         color: #ffffff;
-        font-size: 0.72rem;
+        font-size: calc(0.72rem * var(--font-scale));
         font-weight: bold;
         padding: 3px 7px;
         border-radius: 5px;
@@ -95,7 +99,7 @@
         justify-content: flex-end;
     }
     #clock, .night-clock {
-        font-size: 37.8px;
+        font-size: calc(37.8px * var(--font-scale));
         font-weight: 700;
         letter-spacing: 2px;
         color: #ffffff;
@@ -112,7 +116,7 @@
         line-height: 1.1;
     }
     .clock-ampm {
-        font-size: 16.2px;
+        font-size: calc(16.2px * var(--font-scale));
         font-weight: 600;
         line-height: 1.1;
         display: block;
@@ -120,7 +124,7 @@
         white-space: nowrap !important;
     }
     .clock-seconds {
-        font-size: 16.2px;
+        font-size: calc(16.2px * var(--font-scale));
         font-weight: 600;
         line-height: 1.1;
         opacity: 0.85;
@@ -134,7 +138,7 @@
         margin-top: 3px;
     }
     #date, .night-date {
-        font-size: 0.945rem;
+        font-size: calc(0.945rem * var(--font-scale));
         color: #94a3b8;
         text-align: right;
         white-space: nowrap;
@@ -145,7 +149,7 @@
         color: #ffffff;
         padding: 12px 16px;
         border-radius: 12px;
-        font-size: 1.26rem;
+        font-size: calc(1.26rem * var(--font-scale));
         font-weight: bold;
         text-align: center;
         margin-bottom: 12px;
@@ -170,7 +174,7 @@
         overflow: hidden;
     }
     .panel-title {
-        font-size: 0.855rem;
+        font-size: calc(0.855rem * var(--font-scale));
         font-weight: bold;
         margin-bottom: 8px;
         color: #f59e0b;
@@ -185,7 +189,7 @@
         border: 1px solid #475569;
         padding: 5px 10px;
         border-radius: 6px;
-        font-size: 0.72rem;
+        font-size: calc(0.72rem * var(--font-scale));
         cursor: pointer;
     }
     .bus-list {
@@ -199,7 +203,7 @@
     }
     .bus-item {
         border-radius: 12px;
-        padding: 10px 12px;
+        padding: var(--card-padding) 12px;
         display: flex;
         flex-direction: row;
         justify-content: space-between;
@@ -241,7 +245,7 @@
         grid-column: 1;
         writing-mode: vertical-rl;
         text-orientation: upright;
-        font-size: 0.8rem; /* 保持原樣，不縮小 */
+        font-size: calc(0.8rem * var(--font-scale));
         padding: 3px 2px;
         border-radius: 4px;
         font-weight: bold;
@@ -263,7 +267,7 @@
     .bus-name {
         grid-row: 1;
         grid-column: 2;
-        font-size: 3.06rem;
+        font-size: calc(3.06rem * var(--font-scale));
         font-weight: 700;
         letter-spacing: 1px;
         line-height: 0.95;
@@ -282,7 +286,7 @@
         width: 100%;
     }
     .bus-origin-text {
-        font-size: 1.035rem;
+        font-size: calc(1.035rem * var(--font-scale));
         font-weight: 800;
         color: #ffffff;
         line-height: 1.2;
@@ -293,7 +297,7 @@
         width: 100%;
     }
     .bus-dest-text {
-        font-size: 0.81rem;
+        font-size: calc(0.81rem * var(--font-scale));
         font-weight: 600;
         opacity: 0.95;
         line-height: 1.2;
@@ -325,9 +329,9 @@
         background: rgba(15, 23, 42, 0.85);
         backdrop-filter: blur(4px);
         border-radius: 7px;
-        padding: 5px 1px;
+        padding: calc(var(--card-padding) * 0.5) 1px;
         text-align: center;
-        font-size: 0.945rem;
+        font-size: calc(0.945rem * var(--font-scale));
         font-weight: bold;
         color: #ffffff;
         border: 1px solid rgba(255, 255, 255, 0.15);
@@ -342,9 +346,9 @@
     .eta-badge.first {
         width: 100%;
         background: rgba(15, 23, 42, 0.85);
-        font-size: 1.89rem;
+        font-size: calc(1.89rem * var(--font-scale));
         font-weight: 900;
-        padding: 7px 2px;
+        padding: calc(var(--card-padding) * 0.7) 2px;
         transform: translateY(-4%) scale(0.97, 1.02);
     }
     .eta-badge.eta-green { color: #34d399; border-color: rgba(52, 211, 153, 0.4); }
@@ -365,7 +369,7 @@
     .eta-badge.eta-flash { animation: flashRedYellow 1s infinite; }
     .eta-badge.eta-flash-green { animation: flashRedGreen 1s infinite; }
     .eta-badge.eta-flash-three { animation: flashRedYellowGreen 1.2s infinite; }
-    .loading-text { text-align: center; color: #94a3b8; padding: 20px; font-size: 0.855rem; }
+    .loading-text { text-align: center; color: #94a3b8; padding: 20px; font-size: calc(0.855rem * var(--font-scale)); }
 
     /* ========== 夜間黑屏 ========== */
     #night-screen {
@@ -392,7 +396,7 @@
         position: absolute;
         bottom: 20px;
         color: #334155;
-        font-size: 0.81rem;
+        font-size: calc(0.81rem * var(--font-scale));
         letter-spacing: 1px;
         user-select: none;
     }
@@ -411,13 +415,13 @@
         gap: 12px;
     }
     .night-weather-temp {
-        font-size: 2.34rem;
+        font-size: calc(2.34rem * var(--font-scale));
         font-weight: 700;
         color: #ffffff;
         line-height: 1;
     }
     .night-weather-humidity {
-        font-size: 1.08rem;
+        font-size: calc(1.08rem * var(--font-scale));
         color: #94a3b8;
         font-weight: 500;
     }
@@ -429,7 +433,7 @@
         max-width: 90vw;
     }
     .night-weather-warnings .warning-badge {
-        font-size: 0.855rem;
+        font-size: calc(0.855rem * var(--font-scale));
         padding: 4px 10px;
     }
     .night-weather-icon {
@@ -467,7 +471,7 @@
     .modal-close { background: none; border: none; color: #94a3b8; font-size: 1.62rem; cursor: pointer; padding: 4px; }
     .night-time-section { background: #0f172a; border-radius: 8px; padding: 12px; border: 1px solid #334155; display: flex; flex-direction: column; gap: 8px; }
     .night-time-title { font-size: 0.9rem; font-weight: bold; color: #f59e0b; }
-    .night-time-inputs { display: flex; align-items: center; gap: 12px; font-size: 0.855rem; color: #cbd5e1; }
+    .night-time-inputs { display: flex; align-items: center; gap: 12px; font-size: 0.855rem; color: #cbd5e1; flex-wrap: wrap; }
     .config-list { display: flex; flex-direction: column; gap: 10px; overflow-y: auto; max-height: 45vh; -webkit-overflow-scrolling: touch; }
     .config-item { background: #0f172a; border-radius: 8px; padding: 12px; border: 1px solid #334155; display: flex; flex-direction: column; gap: 8px; }
     .config-row { display: flex; gap: 8px; align-items: center; }
@@ -482,128 +486,42 @@
 
     /* ========== iPad Mini 2 專用優化 (768px ~ 1024px) ========== */
     @media (min-width: 768px) and (max-width: 1024px) {
-        body {
-            padding: 16px;
-        }
-        header {
-            padding-bottom: 12px;
-            margin-bottom: 12px;
-        }
-        .weather-icon {
-            width: 52px;
-            height: 52px;
-        }
-        .weather-temp {
-            font-size: 1.89rem;
-        }
-        .weather-humidity {
-            font-size: 0.945rem;
-        }
-        .warning-badge {
-            font-size: 0.81rem;
-            padding: 4px 9px;
-        }
-        #clock {
-            font-size: 46.8px;
-            letter-spacing: 3px;
-        }
-        .clock-ampm, .clock-seconds {
-            font-size: 18px;
-        }
-        #date {
-            font-size: 1.035rem;
-        }
-        .school-notice {
-            font-size: 1.44rem;
-            padding: 14px 18px;
-        }
-        .bus-panel {
-            padding: 16px;
-            border-radius: 16px;
-        }
-        .panel-title {
-            font-size: 0.945rem;
-            margin-bottom: 10px;
-        }
-        .settings-btn {
-            font-size: 0.81rem;
-            padding: 6px 12px;
-        }
-        .bus-list {
-            gap: 11px;
-        }
-        .bus-item {
-            padding: 11px 14px;
-            border-radius: 13px;
-        }
-        .bus-name {
-            font-size: 3.78rem;
-        }
-        .bus-origin-text {
-            font-size: 1.215rem;
-        }
-        .bus-dest-text {
-            font-size: 0.945rem;
-        }
-        .bus-company-tag {
-            font-size: 0.85rem; /* 保持原樣，不縮小 */
-            padding: 4px 3px;
-        }
-        .eta-group {
-            width: 32%;
-            gap: 5px;
-        }
-        .eta-badge {
-            font-size: 1.08rem;
-            padding: 6px 2px;
-            border-radius: 8px;
-        }
-        .eta-badge.first {
-            font-size: 2.25rem;
-            padding: 8px 2px;
-        }
+        body { padding: 16px; }
+        header { padding-bottom: 12px; margin-bottom: 12px; }
+        .weather-icon { width: 52px; height: 52px; }
+        .weather-temp { font-size: calc(1.89rem * var(--font-scale)); }
+        .weather-humidity { font-size: calc(0.945rem * var(--font-scale)); }
+        .warning-badge { font-size: calc(0.81rem * var(--font-scale)); padding: 4px 9px; }
+        #clock { font-size: calc(46.8px * var(--font-scale)); letter-spacing: 3px; }
+        .clock-ampm, .clock-seconds { font-size: calc(18px * var(--font-scale)); }
+        #date { font-size: calc(1.035rem * var(--font-scale)); }
+        .school-notice { font-size: calc(1.44rem * var(--font-scale)); padding: 14px 18px; }
+        .bus-panel { padding: 16px; border-radius: 16px; }
+        .panel-title { font-size: calc(0.945rem * var(--font-scale)); margin-bottom: 10px; }
+        .settings-btn { font-size: calc(0.81rem * var(--font-scale)); padding: 6px 12px; }
+        .bus-list { gap: 11px; }
+        .bus-item { padding: var(--card-padding) 14px; border-radius: 13px; }
+        .bus-name { font-size: calc(3.78rem * var(--font-scale)); }
+        .bus-origin-text { font-size: calc(1.215rem * var(--font-scale)); }
+        .bus-dest-text { font-size: calc(0.945rem * var(--font-scale)); }
+        .bus-company-tag { font-size: calc(0.85rem * var(--font-scale)); padding: 4px 3px; }
+        .eta-group { width: 32%; gap: 5px; }
+        .eta-badge { font-size: calc(1.08rem * var(--font-scale)); padding: calc(var(--card-padding) * 0.5) 2px; border-radius: 8px; }
+        .eta-badge.first { font-size: calc(2.25rem * var(--font-scale)); padding: calc(var(--card-padding) * 0.7) 2px; }
 
         /* 夜間黑屏 - iPad Mini 適中尺寸 */
-        .night-clock {
-            font-size: 8.55rem;
-        }
-        .night-date {
-            font-size: 1.62rem;
-        }
-        .night-weather-temp {
-            font-size: 2.7rem;
-        }
-        .night-weather-humidity {
-            font-size: 1.215rem;
-        }
-        .night-weather-warnings .warning-badge {
-            font-size: 0.945rem;
-            padding: 5px 12px;
-        }
-        .night-weather-icon {
-            width: 110px;
-            height: 110px;
-        }
-        .night-tip {
-            font-size: 0.9rem;
-            bottom: 24px;
-        }
+        .night-clock { font-size: calc(8.55rem * var(--font-scale)); }
+        .night-date { font-size: calc(1.62rem * var(--font-scale)); }
+        .night-weather-temp { font-size: calc(2.7rem * var(--font-scale)); }
+        .night-weather-humidity { font-size: calc(1.215rem * var(--font-scale)); }
+        .night-weather-warnings .warning-badge { font-size: calc(0.945rem * var(--font-scale)); padding: 5px 12px; }
+        .night-weather-icon { width: 110px; height: 110px; }
+        .night-tip { font-size: calc(0.9rem * var(--font-scale)); bottom: 24px; }
 
-        .modal-content {
-            max-width: 720px;
-            padding: 20px;
-        }
-        .modal-title {
-            font-size: 1.17rem;
-        }
-        .config-input, .config-select {
-            font-size: 0.945rem;
-            padding: 11px;
-        }
-        .action-btn {
-            font-size: 0.99rem;
-            padding: 12px 20px;
-        }
+        .modal-content { max-width: 720px; padding: 20px; }
+        .modal-title { font-size: 1.17rem; }
+        .config-input, .config-select { font-size: 0.945rem; padding: 11px; }
+        .action-btn { font-size: 0.99rem; padding: 12px 20px; }
     }
 
     /* 更大螢幕 (iPad Pro / 桌面) */
@@ -611,27 +529,27 @@
         body { padding: 24px; }
         header { padding-bottom: 16px; border-bottom: 2px solid #334155; }
         .weather-icon { width: 52px; height: 52px; }
-        .weather-temp { font-size: 1.98rem; }
-        .weather-humidity { font-size: 0.945rem; }
-        .warning-badge { font-size: 0.765rem; padding: 3px 8px; }
-        #clock { font-size: 43.2px; letter-spacing: 4px; }
-        #date, .night-date { font-size: 1.08rem; }
-        .school-notice { font-size: 1.755rem; padding: 16px; border-radius: 16px; margin-bottom: 16px; }
+        .weather-temp { font-size: calc(1.98rem * var(--font-scale)); }
+        .weather-humidity { font-size: calc(0.945rem * var(--font-scale)); }
+        .warning-badge { font-size: calc(0.765rem * var(--font-scale)); padding: 3px 8px; }
+        #clock { font-size: calc(43.2px * var(--font-scale)); letter-spacing: 4px; }
+        #date, .night-date { font-size: calc(1.08rem * var(--font-scale)); }
+        .school-notice { font-size: calc(1.755rem * var(--font-scale)); padding: 16px; border-radius: 16px; margin-bottom: 16px; }
         .bus-panel { padding: 24px; border-radius: 24px; }
-        .panel-title { font-size: 0.9rem; margin-bottom: 14px; }
-        .settings-btn { font-size: 0.765rem; padding: 6px 14px; }
+        .panel-title { font-size: calc(0.9rem * var(--font-scale)); margin-bottom: 14px; }
+        .settings-btn { font-size: calc(0.765rem * var(--font-scale)); padding: 6px 14px; }
         .bus-list { gap: 12px; padding-right: 8px; }
-        .bus-item { padding: 10px 16px; border-radius: 14px; gap: 12px; }
+        .bus-item { padding: var(--card-padding) 16px; border-radius: 14px; gap: 12px; }
         .bus-header-grid { column-gap: 8px; }
-        .bus-company-tag { font-size: 0.85rem; /* 保持原樣，不縮小 */ padding: 4px 3px; border-radius: 5px; }
-        .bus-name { font-size: 4.5rem; letter-spacing: 2px; }
+        .bus-company-tag { font-size: calc(0.85rem * var(--font-scale)); padding: 4px 3px; border-radius: 5px; }
+        .bus-name { font-size: calc(4.5rem * var(--font-scale)); letter-spacing: 2px; }
         .bus-dest { gap: 3px; }
-        .bus-origin-text { font-size: 1.44rem; }
-        .bus-dest-text { font-size: 1.035rem; }
+        .bus-origin-text { font-size: calc(1.44rem * var(--font-scale)); }
+        .bus-dest-text { font-size: calc(1.035rem * var(--font-scale)); }
         .eta-group { gap: 5.25px; width: 32%; }
         .eta-next-group { gap: 6px; }
-        .eta-badge { font-size: 1.143rem; padding: 6px; border-radius: 8px; }
-        .eta-badge.first { font-size: 2.475rem; padding: 6px; border-radius: 10px; }
+        .eta-badge { font-size: calc(1.143rem * var(--font-scale)); padding: calc(var(--card-padding) * 0.5); border-radius: 8px; }
+        .eta-badge.first { font-size: calc(2.475rem * var(--font-scale)); padding: calc(var(--card-padding) * 0.5); border-radius: 10px; }
         .modal-content { max-width: 800px; padding: 24px; gap: 16px; }
         .modal-title { font-size: 1.26rem; }
         .modal-close { font-size: 1.98rem; }
@@ -640,11 +558,11 @@
         .delete-btn { font-size: 0.945rem; padding: 12px 16px; }
         .action-btn { font-size: 1.08rem; padding: 14px 24px; }
         .hint-text { font-size: 0.9rem; }
-        .night-clock { font-size: 10.8rem; }
-        .night-date { font-size: 1.98rem; }
-        .night-weather-temp { font-size: 2.88rem; }
-        .night-weather-humidity { font-size: 1.26rem; }
-        .night-weather-warnings .warning-badge { font-size: 0.99rem; padding: 6px 14px; }
+        .night-clock { font-size: calc(10.8rem * var(--font-scale)); }
+        .night-date { font-size: calc(1.98rem * var(--font-scale)); }
+        .night-weather-temp { font-size: calc(2.88rem * var(--font-scale)); }
+        .night-weather-humidity { font-size: calc(1.26rem * var(--font-scale)); }
+        .night-weather-warnings .warning-badge { font-size: calc(0.99rem * var(--font-scale)); padding: 6px 14px; }
         .night-weather-icon { width: 120px; height: 120px; }
     }
 </style>
@@ -732,6 +650,22 @@
                 <label>結束：<input type="time" id="night-end-time" class="config-input" style="flex:none; width: 120px;" value="05:00"></label>
             </div>
         </div>
+
+        <!-- 顯示與排版設定 -->
+        <div class="night-time-section">
+            <div class="night-time-title">🎨 顯示與卡片排版設定</div>
+            <div class="night-time-inputs">
+                <label>字體大小：
+                    <input type="range" id="font-scale-range" min="0.7" max="1.5" step="0.05" value="1.0" oninput="updateFontScaleDisplay(this.value)">
+                    <span id="font-scale-val">1.0x</span>
+                </label>
+                <label style="margin-left: 15px;">卡片高度/內距：
+                    <input type="range" id="card-height-range" min="4" max="24" step="1" value="10" oninput="updateCardHeightDisplay(this.value)">
+                    <span id="card-height-val">10px</span>
+                </label>
+            </div>
+        </div>
+
         <div class="hint-text">💡 當某路線無有效班次時，將顯示「無班次」。NLB 每個方向會自動使用官方 routeId。</div>
         <div class="config-list" id="config-list"></div>
         <div class="modal-footer">
@@ -752,6 +686,32 @@ var isManuallyWoken = false;
 var currentBuses = [];
 var cachedRawEtas = {};
 var nlbRouteCache = null;
+
+/* =========================================================
+   顯示設定 (字體與卡片高度)
+   ========================================================= */
+function applyDisplaySettings(fontScale, cardPadding) {
+    document.documentElement.style.setProperty('--font-scale', fontScale || 1.0);
+    document.documentElement.style.setProperty('--card-padding', (cardPadding || 10) + 'px');
+}
+
+function loadDisplaySettings() {
+    var fontScale = localStorage.getItem('user_font_scale') || '1.0';
+    var cardPadding = localStorage.getItem('user_card_padding') || '10';
+    applyDisplaySettings(fontScale, cardPadding);
+}
+
+function updateFontScaleDisplay(val) {
+    document.getElementById('font-scale-val').innerText = parseFloat(val).toFixed(2) + 'x';
+    applyDisplaySettings(val, document.getElementById('card-height-range').value);
+}
+
+function updateCardHeightDisplay(val) {
+    document.getElementById('card-height-val').innerText = val + 'px';
+    applyDisplaySettings(document.getElementById('font-scale-range').value, val);
+}
+
+loadDisplaySettings();
 
 /* =========================================================
    香港天文台 天氣 API（白天 + 夜間同步更新）
@@ -1291,6 +1251,16 @@ function openSettings() {
     var endEl = document.getElementById('night-end-time');
     if (startEl) startEl.value = localStorage.getItem('night_mode_start') || '20:00';
     if (endEl) endEl.value = localStorage.getItem('night_mode_end') || '05:00';
+
+    var currentFont = localStorage.getItem('user_font_scale') || '1.0';
+    var currentPadding = localStorage.getItem('user_card_padding') || '10';
+    var fontRange = document.getElementById('font-scale-range');
+    var paddingRange = document.getElementById('card-height-range');
+    if (fontRange) fontRange.value = currentFont;
+    if (paddingRange) paddingRange.value = currentPadding;
+    updateFontScaleDisplay(currentFont);
+    updateCardHeightDisplay(currentPadding);
+
     renderSettingsList();
     var modal = document.getElementById('settings-modal');
     if (modal) modal.classList.add('active');
@@ -1670,10 +1640,16 @@ function saveBusConfig() {
     var startTime = document.getElementById('night-start-time').value;
     var endTime = document.getElementById('night-end-time').value;
 
+    var fontScale = document.getElementById('font-scale-range').value;
+    var cardPadding = document.getElementById('card-height-range').value;
+
     localStorage.setItem('night_mode_start', startTime);
     localStorage.setItem('night_mode_end', endTime);
+    localStorage.setItem('user_font_scale', fontScale);
+    localStorage.setItem('user_card_padding', cardPadding);
     localStorage.setItem('user_bus_configs_v15', JSON.stringify(newConfigs));
 
+    applyDisplaySettings(fontScale, cardPadding);
     closeSettings();
     fetchBusData();
 }
