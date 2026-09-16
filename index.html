@@ -51,13 +51,13 @@
         object-fit: contain;
     }
     .weather-temp {
-        font-size: 1.7rem;
+        font-size: 1.53rem;
         font-weight: 700;
         color: #ffffff;
         line-height: 1;
     }
     .weather-humidity {
-        font-size: 0.95rem;
+        font-size: 0.855rem;
         color: #94a3b8;
         font-weight: 500;
     }
@@ -70,7 +70,7 @@
     .warning-badge {
         background: #ef4444;
         color: #ffffff;
-        font-size: 0.8rem;
+        font-size: 0.72rem;
         font-weight: bold;
         padding: 3px 7px;
         border-radius: 5px;
@@ -95,7 +95,7 @@
         justify-content: flex-end;
     }
     #clock, .night-clock {
-        font-size: 42px;
+        font-size: 37.8px;
         font-weight: 700;
         letter-spacing: 2px;
         color: #ffffff;
@@ -112,7 +112,7 @@
         line-height: 1.1;
     }
     .clock-ampm {
-        font-size: 18px;
+        font-size: 16.2px;
         font-weight: 600;
         line-height: 1.1;
         display: block;
@@ -120,7 +120,7 @@
         white-space: nowrap !important;
     }
     .clock-seconds {
-        font-size: 18px;
+        font-size: 16.2px;
         font-weight: 600;
         line-height: 1.1;
         opacity: 0.85;
@@ -134,7 +134,7 @@
         margin-top: 3px;
     }
     #date, .night-date {
-        font-size: 1.05rem;
+        font-size: 0.945rem;
         color: #94a3b8;
         text-align: right;
         white-space: nowrap;
@@ -145,7 +145,7 @@
         color: #ffffff;
         padding: 12px 16px;
         border-radius: 12px;
-        font-size: 1.4rem;
+        font-size: 1.26rem;
         font-weight: bold;
         text-align: center;
         margin-bottom: 12px;
@@ -170,7 +170,7 @@
         overflow: hidden;
     }
     .panel-title {
-        font-size: 0.9025rem; /* 0.95rem * 0.95 */
+        font-size: 0.855rem;
         font-weight: bold;
         margin-bottom: 8px;
         color: #f59e0b;
@@ -185,7 +185,7 @@
         border: 1px solid #475569;
         padding: 5px 10px;
         border-radius: 6px;
-        font-size: 0.76rem; /* 0.8rem * 0.95 */
+        font-size: 0.72rem;
         cursor: pointer;
     }
     .bus-list {
@@ -236,13 +236,12 @@
         flex: 1;
         overflow: hidden;
     }
-    /* 巴士公司 Logo (保持原樣，不縮小) */
     .bus-company-tag {
         grid-row: 1;
         grid-column: 1;
         writing-mode: vertical-rl;
         text-orientation: upright;
-        font-size: 0.8rem;
+        font-size: 0.8rem; /* 保持原樣，不縮小 */
         padding: 3px 2px;
         border-radius: 4px;
         font-weight: bold;
@@ -264,7 +263,7 @@
     .bus-name {
         grid-row: 1;
         grid-column: 2;
-        font-size: 3.23rem; /* 3.4rem * 0.95 */
+        font-size: 3.06rem;
         font-weight: 700;
         letter-spacing: 1px;
         line-height: 0.95;
@@ -283,7 +282,7 @@
         width: 100%;
     }
     .bus-origin-text {
-        font-size: 1.0925rem; /* 1.15rem * 0.95 */
+        font-size: 1.035rem;
         font-weight: 800;
         color: #ffffff;
         line-height: 1.2;
@@ -294,7 +293,7 @@
         width: 100%;
     }
     .bus-dest-text {
-        font-size: 0.855rem; /* 0.9rem * 0.95 */
+        font-size: 0.81rem;
         font-weight: 600;
         opacity: 0.95;
         line-height: 1.2;
@@ -328,7 +327,7 @@
         border-radius: 7px;
         padding: 5px 1px;
         text-align: center;
-        font-size: 0.9975rem; /* 1.05rem * 0.95 */
+        font-size: 0.945rem;
         font-weight: bold;
         color: #ffffff;
         border: 1px solid rgba(255, 255, 255, 0.15);
@@ -343,7 +342,7 @@
     .eta-badge.first {
         width: 100%;
         background: rgba(15, 23, 42, 0.85);
-        font-size: 1.995rem; /* 2.1rem * 0.95 */
+        font-size: 1.89rem;
         font-weight: 900;
         padding: 7px 2px;
         transform: translateY(-4%) scale(0.97, 1.02);
@@ -366,7 +365,7 @@
     .eta-badge.eta-flash { animation: flashRedYellow 1s infinite; }
     .eta-badge.eta-flash-green { animation: flashRedGreen 1s infinite; }
     .eta-badge.eta-flash-three { animation: flashRedYellowGreen 1.2s infinite; }
-    .loading-text { text-align: center; color: #94a3b8; padding: 20px; font-size: 0.9025rem; } /* 0.95rem * 0.95 */
+    .loading-text { text-align: center; color: #94a3b8; padding: 20px; font-size: 0.855rem; }
 
     /* ========== 夜間黑屏 ========== */
     #night-screen {
@@ -393,7 +392,7 @@
         position: absolute;
         bottom: 20px;
         color: #334155;
-        font-size: 0.9rem;
+        font-size: 0.81rem;
         letter-spacing: 1px;
         user-select: none;
     }
@@ -412,13 +411,13 @@
         gap: 12px;
     }
     .night-weather-temp {
-        font-size: 2.6rem;
+        font-size: 2.34rem;
         font-weight: 700;
         color: #ffffff;
         line-height: 1;
     }
     .night-weather-humidity {
-        font-size: 1.2rem;
+        font-size: 1.08rem;
         color: #94a3b8;
         font-weight: 500;
     }
@@ -430,7 +429,7 @@
         max-width: 90vw;
     }
     .night-weather-warnings .warning-badge {
-        font-size: 0.95rem;
+        font-size: 0.855rem;
         padding: 4px 10px;
     }
     .night-weather-icon {
@@ -464,22 +463,22 @@
         gap: 12px;
     }
     .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #334155; padding-bottom: 8px; }
-    .modal-title { font-size: 1.2rem; font-weight: bold; color: #38bdf8; }
-    .modal-close { background: none; border: none; color: #94a3b8; font-size: 1.8rem; cursor: pointer; padding: 4px; }
+    .modal-title { font-size: 1.08rem; font-weight: bold; color: #38bdf8; }
+    .modal-close { background: none; border: none; color: #94a3b8; font-size: 1.62rem; cursor: pointer; padding: 4px; }
     .night-time-section { background: #0f172a; border-radius: 8px; padding: 12px; border: 1px solid #334155; display: flex; flex-direction: column; gap: 8px; }
-    .night-time-title { font-size: 1rem; font-weight: bold; color: #f59e0b; }
-    .night-time-inputs { display: flex; align-items: center; gap: 12px; font-size: 0.95rem; color: #cbd5e1; }
+    .night-time-title { font-size: 0.9rem; font-weight: bold; color: #f59e0b; }
+    .night-time-inputs { display: flex; align-items: center; gap: 12px; font-size: 0.855rem; color: #cbd5e1; }
     .config-list { display: flex; flex-direction: column; gap: 10px; overflow-y: auto; max-height: 45vh; -webkit-overflow-scrolling: touch; }
     .config-item { background: #0f172a; border-radius: 8px; padding: 12px; border: 1px solid #334155; display: flex; flex-direction: column; gap: 8px; }
     .config-row { display: flex; gap: 8px; align-items: center; }
-    .config-input, .config-select { background: #1e293b; border: 1px solid #475569; color: #fff; padding: 9px; border-radius: 6px; font-size: 0.95rem; outline: none; }
+    .config-input, .config-select { background: #1e293b; border: 1px solid #475569; color: #fff; padding: 9px; border-radius: 6px; font-size: 0.855rem; outline: none; }
     .config-input, .config-route-container { flex: 1; }
     .config-select.bus-stop { flex: 1.5; }
-    .delete-btn { background: #991b1b; color: #fca5a5; border: none; padding: 99px 12px; border-radius: 6px; font-size: 0.95rem; cursor: pointer; }
+    .delete-btn { background: #991b1b; color: #fca5a5; border: none; padding: 9px 12px; border-radius: 6px; font-size: 0.855rem; cursor: pointer; }
     .modal-footer { display: flex; justify-content: space-between; border-top: 1px solid #334155; padding-top: 12px; margin-top: 4px; }
-    .action-btn { background: #0284c7; color: white; border: none; padding: 11px 18px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 1rem; }
+    .action-btn { background: #0284c7; color: white; border: none; padding: 11px 18px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 0.9rem; }
     .add-btn { background: #166534; color: #86efac; }
-    .hint-text { font-size: 0.85rem; color: #94a3b8; }
+    .hint-text { font-size: 0.765rem; color: #94a3b8; }
 
     /* ========== iPad Mini 2 專用優化 (768px ~ 1024px) ========== */
     @media (min-width: 768px) and (max-width: 1024px) {
@@ -495,27 +494,27 @@
             height: 52px;
         }
         .weather-temp {
-            font-size: 2.1rem;
+            font-size: 1.89rem;
         }
         .weather-humidity {
-            font-size: 1.05rem;
+            font-size: 0.945rem;
         }
         .warning-badge {
-            font-size: 0.9rem;
+            font-size: 0.81rem;
             padding: 4px 9px;
         }
         #clock {
-            font-size: 52px;
+            font-size: 46.8px;
             letter-spacing: 3px;
         }
         .clock-ampm, .clock-seconds {
-            font-size: 20px;
+            font-size: 18px;
         }
         #date {
-            font-size: 1.15rem;
+            font-size: 1.035rem;
         }
         .school-notice {
-            font-size: 1.6rem;
+            font-size: 1.44rem;
             padding: 14px 18px;
         }
         .bus-panel {
@@ -523,11 +522,11 @@
             border-radius: 16px;
         }
         .panel-title {
-            font-size: 0.9975rem; /* 1.05rem * 0.95 */
+            font-size: 0.945rem;
             margin-bottom: 10px;
         }
         .settings-btn {
-            font-size: 0.855rem; /* 0.9rem * 0.95 */
+            font-size: 0.81rem;
             padding: 6px 12px;
         }
         .bus-list {
@@ -538,17 +537,16 @@
             border-radius: 13px;
         }
         .bus-name {
-            font-size: 3.99rem; /* 4.2rem * 0.95 */
+            font-size: 3.78rem;
         }
         .bus-origin-text {
-            font-size: 1.2825rem; /* 1.35rem * 0.95 */
+            font-size: 1.215rem;
         }
         .bus-dest-text {
-            font-size: 0.9975rem; /* 1.05rem * 0.95 */
+            font-size: 0.945rem;
         }
-        /* 巴士公司 Logo (保持原樣，不縮小) */
         .bus-company-tag {
-            font-size: 0.85rem;
+            font-size: 0.85rem; /* 保持原樣，不縮小 */
             padding: 4px 3px;
         }
         .eta-group {
@@ -556,30 +554,30 @@
             gap: 5px;
         }
         .eta-badge {
-            font-size: 1.14rem; /* 1.2rem * 0.95 */
+            font-size: 1.08rem;
             padding: 6px 2px;
             border-radius: 8px;
         }
         .eta-badge.first {
-            font-size: 2.375rem; /* 2.5rem * 0.95 */
+            font-size: 2.25rem;
             padding: 8px 2px;
         }
 
         /* 夜間黑屏 - iPad Mini 適中尺寸 */
         .night-clock {
-            font-size: 9.5rem;
+            font-size: 8.55rem;
         }
         .night-date {
-            font-size: 1.8rem;
+            font-size: 1.62rem;
         }
         .night-weather-temp {
-            font-size: 3rem;
+            font-size: 2.7rem;
         }
         .night-weather-humidity {
-            font-size: 1.35rem;
+            font-size: 1.215rem;
         }
         .night-weather-warnings .warning-badge {
-            font-size: 1.05rem;
+            font-size: 0.945rem;
             padding: 5px 12px;
         }
         .night-weather-icon {
@@ -587,7 +585,7 @@
             height: 110px;
         }
         .night-tip {
-            font-size: 1rem;
+            font-size: 0.9rem;
             bottom: 24px;
         }
 
@@ -596,14 +594,14 @@
             padding: 20px;
         }
         .modal-title {
-            font-size: 1.3rem;
+            font-size: 1.17rem;
         }
         .config-input, .config-select {
-            font-size: 1.05rem;
+            font-size: 0.945rem;
             padding: 11px;
         }
         .action-btn {
-            font-size: 1.1rem;
+            font-size: 0.99rem;
             padding: 12px 20px;
         }
     }
@@ -613,41 +611,40 @@
         body { padding: 24px; }
         header { padding-bottom: 16px; border-bottom: 2px solid #334155; }
         .weather-icon { width: 52px; height: 52px; }
-        .weather-temp { font-size: 2.2rem; }
-        .weather-humidity { font-size: 1.05rem; }
-        .warning-badge { font-size: 0.85rem; padding: 3px 8px; }
-        #clock { font-size: 48px; letter-spacing: 4px; }
-        #date, .night-date { font-size: 1.2rem; }
-        .school-notice { font-size: 1.95rem; padding: 16px; border-radius: 16px; margin-bottom: 16px; }
+        .weather-temp { font-size: 1.98rem; }
+        .weather-humidity { font-size: 0.945rem; }
+        .warning-badge { font-size: 0.765rem; padding: 3px 8px; }
+        #clock { font-size: 43.2px; letter-spacing: 4px; }
+        #date, .night-date { font-size: 1.08rem; }
+        .school-notice { font-size: 1.755rem; padding: 16px; border-radius: 16px; margin-bottom: 16px; }
         .bus-panel { padding: 24px; border-radius: 24px; }
-        .panel-title { font-size: 0.95rem; margin-bottom: 14px; } /* 1rem * 0.95 */
-        .settings-btn { font-size: 0.8075rem; padding: 6px 14px; } /* 0.85rem * 0.95 */
+        .panel-title { font-size: 0.9rem; margin-bottom: 14px; }
+        .settings-btn { font-size: 0.765rem; padding: 6px 14px; }
         .bus-list { gap: 12px; padding-right: 8px; }
         .bus-item { padding: 10px 16px; border-radius: 14px; gap: 12px; }
         .bus-header-grid { column-gap: 8px; }
-        /* 巴士公司 Logo (保持原樣，不縮小) */
-        .bus-company-tag { font-size: 0.85rem; padding: 4px 3px; border-radius: 5px; }
-        .bus-name { font-size: 4.75rem; letter-spacing: 2px; } /* 5rem * 0.95 */
+        .bus-company-tag { font-size: 0.85rem; /* 保持原樣，不縮小 */ padding: 4px 3px; border-radius: 5px; }
+        .bus-name { font-size: 4.5rem; letter-spacing: 2px; }
         .bus-dest { gap: 3px; }
-        .bus-origin-text { font-size: 1.52rem; } /* 1.6rem * 0.95 */
-        .bus-dest-text { font-size: 1.0925rem; } /* 1.15rem * 0.95 */
+        .bus-origin-text { font-size: 1.44rem; }
+        .bus-dest-text { font-size: 1.035rem; }
         .eta-group { gap: 5.25px; width: 32%; }
         .eta-next-group { gap: 6px; }
-        .eta-badge { font-size: 1.2065rem; padding: 6px; border-radius: 8px; } /* 1.27rem * 0.95 */
-        .eta-badge.first { font-size: 2.6125rem; padding: 6px; border-radius: 10px; } /* 2.75rem * 0.95 */
+        .eta-badge { font-size: 1.143rem; padding: 6px; border-radius: 8px; }
+        .eta-badge.first { font-size: 2.475rem; padding: 6px; border-radius: 10px; }
         .modal-content { max-width: 800px; padding: 24px; gap: 16px; }
-        .modal-title { font-size: 1.4rem; }
-        .modal-close { font-size: 2.2rem; }
+        .modal-title { font-size: 1.26rem; }
+        .modal-close { font-size: 1.98rem; }
         .config-item { padding: 16px; gap: 14px; border-radius: 12px; }
-        .config-input, .config-select { font-size: 1.1rem; padding: 12px; }
-        .delete-btn { font-size: 1.05rem; padding: 12px 16px; }
-        .action-btn { font-size: 1.2rem; padding: 14px 24px; }
-        .hint-text { font-size: 1rem; }
-        .night-clock { font-size: 12rem; }
-        .night-date { font-size: 2.2rem; }
-        .night-weather-temp { font-size: 3.2rem; }
-        .night-weather-humidity { font-size: 1.4rem; }
-        .night-weather-warnings .warning-badge { font-size: 1.1rem; padding: 6px 14px; }
+        .config-input, .config-select { font-size: 0.99rem; padding: 12px; }
+        .delete-btn { font-size: 0.945rem; padding: 12px 16px; }
+        .action-btn { font-size: 1.08rem; padding: 14px 24px; }
+        .hint-text { font-size: 0.9rem; }
+        .night-clock { font-size: 10.8rem; }
+        .night-date { font-size: 1.98rem; }
+        .night-weather-temp { font-size: 2.88rem; }
+        .night-weather-humidity { font-size: 1.26rem; }
+        .night-weather-warnings .warning-badge { font-size: 0.99rem; padding: 6px 14px; }
         .night-weather-icon { width: 120px; height: 120px; }
     }
 </style>
