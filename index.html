@@ -170,7 +170,7 @@
         overflow: hidden;
     }
     .panel-title {
-        font-size: 0.95rem;
+        font-size: 0.9025rem; /* 0.95rem * 0.95 */
         font-weight: bold;
         margin-bottom: 8px;
         color: #f59e0b;
@@ -185,7 +185,7 @@
         border: 1px solid #475569;
         padding: 5px 10px;
         border-radius: 6px;
-        font-size: 0.8rem;
+        font-size: 0.76rem; /* 0.8rem * 0.95 */
         cursor: pointer;
     }
     .bus-list {
@@ -236,6 +236,7 @@
         flex: 1;
         overflow: hidden;
     }
+    /* 巴士公司 Logo (保持原樣，不縮小) */
     .bus-company-tag {
         grid-row: 1;
         grid-column: 1;
@@ -263,7 +264,7 @@
     .bus-name {
         grid-row: 1;
         grid-column: 2;
-        font-size: 3.4rem;
+        font-size: 3.23rem; /* 3.4rem * 0.95 */
         font-weight: 700;
         letter-spacing: 1px;
         line-height: 0.95;
@@ -282,7 +283,7 @@
         width: 100%;
     }
     .bus-origin-text {
-        font-size: 1.15rem;
+        font-size: 1.0925rem; /* 1.15rem * 0.95 */
         font-weight: 800;
         color: #ffffff;
         line-height: 1.2;
@@ -293,7 +294,7 @@
         width: 100%;
     }
     .bus-dest-text {
-        font-size: 0.9rem;
+        font-size: 0.855rem; /* 0.9rem * 0.95 */
         font-weight: 600;
         opacity: 0.95;
         line-height: 1.2;
@@ -327,7 +328,7 @@
         border-radius: 7px;
         padding: 5px 1px;
         text-align: center;
-        font-size: 1.05rem;
+        font-size: 0.9975rem; /* 1.05rem * 0.95 */
         font-weight: bold;
         color: #ffffff;
         border: 1px solid rgba(255, 255, 255, 0.15);
@@ -342,7 +343,7 @@
     .eta-badge.first {
         width: 100%;
         background: rgba(15, 23, 42, 0.85);
-        font-size: 2.1rem;
+        font-size: 1.995rem; /* 2.1rem * 0.95 */
         font-weight: 900;
         padding: 7px 2px;
         transform: translateY(-4%) scale(0.97, 1.02);
@@ -365,7 +366,7 @@
     .eta-badge.eta-flash { animation: flashRedYellow 1s infinite; }
     .eta-badge.eta-flash-green { animation: flashRedGreen 1s infinite; }
     .eta-badge.eta-flash-three { animation: flashRedYellowGreen 1.2s infinite; }
-    .loading-text { text-align: center; color: #94a3b8; padding: 20px; font-size: 0.95rem; }
+    .loading-text { text-align: center; color: #94a3b8; padding: 20px; font-size: 0.9025rem; } /* 0.95rem * 0.95 */
 
     /* ========== 夜間黑屏 ========== */
     #night-screen {
@@ -474,7 +475,7 @@
     .config-input, .config-select { background: #1e293b; border: 1px solid #475569; color: #fff; padding: 9px; border-radius: 6px; font-size: 0.95rem; outline: none; }
     .config-input, .config-route-container { flex: 1; }
     .config-select.bus-stop { flex: 1.5; }
-    .delete-btn { background: #991b1b; color: #fca5a5; border: none; padding: 9px 12px; border-radius: 6px; font-size: 0.95rem; cursor: pointer; }
+    .delete-btn { background: #991b1b; color: #fca5a5; border: none; padding: 99px 12px; border-radius: 6px; font-size: 0.95rem; cursor: pointer; }
     .modal-footer { display: flex; justify-content: space-between; border-top: 1px solid #334155; padding-top: 12px; margin-top: 4px; }
     .action-btn { background: #0284c7; color: white; border: none; padding: 11px 18px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 1rem; }
     .add-btn { background: #166534; color: #86efac; }
@@ -522,11 +523,11 @@
             border-radius: 16px;
         }
         .panel-title {
-            font-size: 1.05rem;
+            font-size: 0.9975rem; /* 1.05rem * 0.95 */
             margin-bottom: 10px;
         }
         .settings-btn {
-            font-size: 0.9rem;
+            font-size: 0.855rem; /* 0.9rem * 0.95 */
             padding: 6px 12px;
         }
         .bus-list {
@@ -537,14 +538,15 @@
             border-radius: 13px;
         }
         .bus-name {
-            font-size: 4.2rem;
+            font-size: 3.99rem; /* 4.2rem * 0.95 */
         }
         .bus-origin-text {
-            font-size: 1.35rem;
+            font-size: 1.2825rem; /* 1.35rem * 0.95 */
         }
         .bus-dest-text {
-            font-size: 1.05rem;
+            font-size: 0.9975rem; /* 1.05rem * 0.95 */
         }
+        /* 巴士公司 Logo (保持原樣，不縮小) */
         .bus-company-tag {
             font-size: 0.85rem;
             padding: 4px 3px;
@@ -554,12 +556,12 @@
             gap: 5px;
         }
         .eta-badge {
-            font-size: 1.2rem;
+            font-size: 1.14rem; /* 1.2rem * 0.95 */
             padding: 6px 2px;
             border-radius: 8px;
         }
         .eta-badge.first {
-            font-size: 2.5rem;
+            font-size: 2.375rem; /* 2.5rem * 0.95 */
             padding: 8px 2px;
         }
 
@@ -618,20 +620,21 @@
         #date, .night-date { font-size: 1.2rem; }
         .school-notice { font-size: 1.95rem; padding: 16px; border-radius: 16px; margin-bottom: 16px; }
         .bus-panel { padding: 24px; border-radius: 24px; }
-        .panel-title { font-size: 1rem; margin-bottom: 14px; }
-        .settings-btn { font-size: 0.85rem; padding: 6px 14px; }
+        .panel-title { font-size: 0.95rem; margin-bottom: 14px; } /* 1rem * 0.95 */
+        .settings-btn { font-size: 0.8075rem; padding: 6px 14px; } /* 0.85rem * 0.95 */
         .bus-list { gap: 12px; padding-right: 8px; }
         .bus-item { padding: 10px 16px; border-radius: 14px; gap: 12px; }
         .bus-header-grid { column-gap: 8px; }
+        /* 巴士公司 Logo (保持原樣，不縮小) */
         .bus-company-tag { font-size: 0.85rem; padding: 4px 3px; border-radius: 5px; }
-        .bus-name { font-size: 5rem; letter-spacing: 2px; }
+        .bus-name { font-size: 4.75rem; letter-spacing: 2px; } /* 5rem * 0.95 */
         .bus-dest { gap: 3px; }
-        .bus-origin-text { font-size: 1.6rem; }
-        .bus-dest-text { font-size: 1.15rem; }
+        .bus-origin-text { font-size: 1.52rem; } /* 1.6rem * 0.95 */
+        .bus-dest-text { font-size: 1.0925rem; } /* 1.15rem * 0.95 */
         .eta-group { gap: 5.25px; width: 32%; }
         .eta-next-group { gap: 6px; }
-        .eta-badge { font-size: 1.27rem; padding: 6px; border-radius: 8px; }
-        .eta-badge.first { font-size: 2.75rem; padding: 6px; border-radius: 10px; }
+        .eta-badge { font-size: 1.2065rem; padding: 6px; border-radius: 8px; } /* 1.27rem * 0.95 */
+        .eta-badge.first { font-size: 2.6125rem; padding: 6px; border-radius: 10px; } /* 2.75rem * 0.95 */
         .modal-content { max-width: 800px; padding: 24px; gap: 16px; }
         .modal-title { font-size: 1.4rem; }
         .modal-close { font-size: 2.2rem; }
